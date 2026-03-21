@@ -1,0 +1,5 @@
+/home/konstantin/Compilers_course.Task1/project/build/CMakeFiles/minilang.dir
+/home/konstantin/Compilers_course.Task1/project/build/CMakeFiles/tests.dir
+/home/konstantin/Compilers_course.Task1/project/build/CMakeFiles/test.dir
+/home/konstantin/Compilers_course.Task1/project/build/CMakeFiles/edit_cache.dir
+/home/konstantin/Compilers_course.Task1/project/build/CMakeFiles/rebuild_cache.dir

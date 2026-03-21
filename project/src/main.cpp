@@ -1,6 +1,8 @@
 #include "lexer.hpp"
 #include "parser.hpp"
-#include "ast.hpp"
+#include "visitors/print_visitor.hpp"
+#include "visitors/interpreter.hpp"
+#include <fstream>
 #include <iostream>
 #include <memory>
 
@@ -17,7 +19,7 @@ int main() {
     )";
     
     try {
-        // Лексический анализ
+        std::cout << "=== Лексический анализ ===" << std::endl;
         Lexer lexer(testProgram);
         std::vector<Token> tokens = lexer.tokenize();
         
@@ -25,18 +27,39 @@ int main() {
         for (const auto& token : tokens) {
             std::cout << "  " << token.toString() << std::endl;
         }
-        std::cout << "\n";
+        std::cout << std::endl;
         
-        // Синтаксический анализ
+        std::cout << "=== Синтаксический анализ ===" << std::endl;
         Parser parser(tokens);
         auto program = parser.parse();
+        std::cout << "Парсинг успешен!" << std::endl << std::endl;
+
+        std::cout << "=== Печать AST в файл ===" << std::endl;
+        std::ofstream astFile("ast_output.txt");
+        if (astFile.is_open()) {
+            PrintVisitor filePrinter(astFile);
+            program->accept(filePrinter);
+            astFile.close();
+            std::cout << "AST сохранён в файл: ast_output.txt" << std::endl;
+        } else {
+            std::cout << "Не удалось создать файл ast_output.txt" << std::endl;
+        }
+        std::cout << std::endl;
         
-        std::cout << "AST дерево:" << std::endl;
-        PrintVisitor printer;
-        program->accept(printer);
+        std::cout << "=== AST дерево ===" << std::endl;
+        PrintVisitor consolePrinter(std::cout);
+        program->accept(consolePrinter);
+        std::cout << std::endl;
+        
+        std::cout << "=== Выполнение программы ===" << std::endl;
+        Interpreter interpreter;
+        program->accept(interpreter);
+        std::cout << std::endl;
+        
+        std::cout << "=== Программа успешно завершена ===" << std::endl;
         
     } catch (const std::exception& e) {
-        std::cerr << "Ошибка: " << e.what() << std::endl;
+        std::cerr << "\n!!! ОШИБКА: " << e.what() << std::endl;
         return 1;
     }
     

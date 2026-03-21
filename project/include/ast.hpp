@@ -27,13 +27,11 @@ public:
     virtual ~Statement() = default;
 };
 
-// Числовой литерал (например, 42)
+// Числовой литерал
 class NumberLiteral : public Expression {
 public:
     int value;
-    
     NumberLiteral(int val);
-    
     void accept(ASTVisitor& visitor) override;
     std::string toString() const override;
 };
@@ -42,95 +40,78 @@ public:
 class Variable : public Expression {
 public:
     std::string name;
-    
     Variable(const std::string& n);
-    
     void accept(ASTVisitor& visitor) override;
     std::string toString() const override;
 };
 
-// Бинарная операция (например, x + 1, x == 0)
+// Бинарная операция
 class BinaryOp : public Expression {
 public:
-    std::string op;      // "+", "-", "*", "/", "=="
+    std::string op;
     std::unique_ptr<Expression> left;
     std::unique_ptr<Expression> right;
-    
     BinaryOp(const std::string& o, std::unique_ptr<Expression> l, std::unique_ptr<Expression> r);
-    
     void accept(ASTVisitor& visitor) override;
     std::string toString() const override;
 };
 
-// 
-
-// Объявление переменной: declare x: int;
+// Объявление переменной
 class VarDecl : public Statement {
 public:
     std::string name;
-    std::string type;    // пока только "int"
-    
+    std::string type;
     VarDecl(const std::string& n, const std::string& t = "int");
-    
     void accept(ASTVisitor& visitor) override;
     std::string toString() const override;
 };
 
-// Присваивание: x = 42;
+// Присваивание
 class Assignment : public Statement {
 public:
     std::string name;
     std::unique_ptr<Expression> value;
-    
     Assignment(const std::string& n, std::unique_ptr<Expression> v);
-    
     void accept(ASTVisitor& visitor) override;
     std::string toString() const override;
 };
 
-// Печать: print(x);
+// Печать
 class PrintStmt : public Statement {
 public:
     std::unique_ptr<Expression> expr;
-    
     PrintStmt(std::unique_ptr<Expression> e);
-    
     void accept(ASTVisitor& visitor) override;
     std::string toString() const override;
 };
 
-// Условный оператор: if (x == 0) { ... } else { ... }
+// Условный оператор
 class IfStmt : public Statement {
 public:
     std::unique_ptr<Expression> condition;
     std::vector<std::unique_ptr<Statement>> thenBranch;
     std::vector<std::unique_ptr<Statement>> elseBranch;
-    
     IfStmt(std::unique_ptr<Expression> cond, 
            std::vector<std::unique_ptr<Statement>> thenStmts,
            std::vector<std::unique_ptr<Statement>> elseStmts = {});
-    
     void accept(ASTVisitor& visitor) override;
     std::string toString() const override;
 };
 
-// Программа (корневой узел) - список инструкций
+// Программа
 class Program : public ASTNode {
 public:
     std::vector<std::unique_ptr<Statement>> statements;
-    
     Program() = default;
-    
     void addStatement(std::unique_ptr<Statement> stmt);
-    
     void accept(ASTVisitor& visitor) override;
     std::string toString() const override;
 };
 
+// Базовый класс визитора
 class ASTVisitor {
 public:
     virtual ~ASTVisitor() = default;
-    
     virtual void visit(Program& node) = 0;
     virtual void visit(NumberLiteral& node) = 0;
     virtual void visit(Variable& node) = 0;
@@ -139,20 +120,4 @@ public:
     virtual void visit(Assignment& node) = 0;
     virtual void visit(PrintStmt& node) = 0;
     virtual void visit(IfStmt& node) = 0;
-};
-
-class PrintVisitor : public ASTVisitor {
-private:
-    int indent = 0;
-    void printIndent();
-    
-public:
-    void visit(Program& node) override;
-    void visit(NumberLiteral& node) override;
-    void visit(Variable& node) override;
-    void visit(BinaryOp& node) override;
-    void visit(VarDecl& node) override;
-    void visit(Assignment& node) override;
-    void visit(PrintStmt& node) override;
-    void visit(IfStmt& node) override;
 };
