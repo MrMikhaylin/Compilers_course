@@ -84,3 +84,13 @@ void PrintVisitor::visit(IfStmt& node) {
         indent--;
     }
 }
+
+void PrintVisitor::visit(BlockStatement& node) {
+    out << "Block:\n";
+    indent++;
+    for (auto& stmt : node.statements) {
+        printIndent();
+        stmt->accept(*this);
+    }
+    indent--;
+}

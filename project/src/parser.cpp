@@ -116,7 +116,6 @@ std::unique_ptr<Statement> Parser::parseStatement() {
 }
 
 std::unique_ptr<Statement> Parser::parseVarDecl() {
-    // declare x: int;
     Token nameToken = consume(TokenType::IDENTIFIER, "Ожидается имя переменной после 'declare'");
     consume(TokenType::COLON, "Ожидается ':' после имени переменной");
     
@@ -133,8 +132,7 @@ std::unique_ptr<Statement> Parser::parseVarDecl() {
 }
 
 std::unique_ptr<Statement> Parser::parseAssignment() {
-    // x = 42;
-    Token nameToken = previous(); // IDENTIFIER уже считан в parseStatement
+    Token nameToken = previous();
     
     consume(TokenType::ASSIGN, "Ожидается '=' в присваивании");
     
@@ -146,7 +144,6 @@ std::unique_ptr<Statement> Parser::parseAssignment() {
 }
 
 std::unique_ptr<Statement> Parser::parsePrintStmt() {
-    // print(x);
     consume(TokenType::LPAREN, "Ожидается '(' после print");
     
     auto expr = parseExpression();
@@ -158,7 +155,6 @@ std::unique_ptr<Statement> Parser::parsePrintStmt() {
 }
 
 std::unique_ptr<Statement> Parser::parseIfStmt() {
-    // if (x == 0) { ... } else { ... }
     consume(TokenType::LPAREN, "Ожидается '(' после if");
     
     auto condition = parseExpression();
@@ -170,10 +166,9 @@ std::unique_ptr<Statement> Parser::parseIfStmt() {
     
     if (match(TokenType::LBRACE)) {
         auto block = parseBlock();
-        // Извлекаем операторы из блока
-        IfStmt* ifBlock = dynamic_cast<IfStmt*>(block.get());
-        if (ifBlock) {
-            thenBranch = std::move(ifBlock->thenBranch);
+        BlockStatement* blockStmt = dynamic_cast<BlockStatement*>(block.get());
+        if (blockStmt) {
+            thenBranch = std::move(blockStmt->statements);
         }
     } else {
         auto stmt = parseStatement();
@@ -187,9 +182,9 @@ std::unique_ptr<Statement> Parser::parseIfStmt() {
     if (match(TokenType::ELSE)) {
         if (match(TokenType::LBRACE)) {
             auto block = parseBlock();
-            IfStmt* ifBlock = dynamic_cast<IfStmt*>(block.get());
-            if (ifBlock) {
-                elseBranch = std::move(ifBlock->thenBranch);
+            BlockStatement* blockStmt = dynamic_cast<BlockStatement*>(block.get());
+            if (blockStmt) {
+                elseBranch = std::move(blockStmt->statements);
             }
         } else {
             auto stmt = parseStatement();
@@ -203,13 +198,12 @@ std::unique_ptr<Statement> Parser::parseIfStmt() {
 }
 
 std::unique_ptr<Statement> Parser::parseBlock() {
-    // { statement1; statement2; ... }
-    auto block = std::make_unique<IfStmt>(nullptr, std::vector<std::unique_ptr<Statement>>());
+    auto block = std::make_unique<BlockStatement>();
     
     while (!check(TokenType::RBRACE) && !check(TokenType::END)) {
         auto stmt = parseStatement();
         if (stmt) {
-            block->thenBranch.push_back(std::move(stmt));
+            block->addStatement(std::move(stmt));
         }
     }
     

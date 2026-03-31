@@ -93,6 +93,24 @@ std::string IfStmt::toString() const {
     return result;
 }
 
+// --- BlockStatement ---
+void BlockStatement::addStatement(std::unique_ptr<Statement> stmt) {
+    statements.push_back(std::move(stmt));
+}
+
+void BlockStatement::accept(ASTVisitor& visitor) {
+    visitor.visit(*this);
+}
+
+std::string BlockStatement::toString() const {
+    std::string result = "Block([";
+    for (const auto& stmt : statements) {
+        result += stmt->toString() + ", ";
+    }
+    result += "])";
+    return result;
+}
+
 // --- Program ---
 void Program::addStatement(std::unique_ptr<Statement> stmt) {
     statements.push_back(std::move(stmt));

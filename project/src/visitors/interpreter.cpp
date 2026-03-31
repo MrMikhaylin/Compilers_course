@@ -2,32 +2,22 @@
 #include <iostream>
 #include <stdexcept>
 
-// ========== Публичные методы ==========
-
 void Interpreter::visit(Program& node) {
     for (auto& stmt : node.statements) {
         stmt->accept(*this);
     }
 }
 
-void Interpreter::visit(NumberLiteral& node) {
-    // Nothing to do here - numbers are evaluated in evaluate()
-}
+void Interpreter::visit(NumberLiteral& node) {}
 
-void Interpreter::visit(Variable& node) {
-    // Nothing to do here - variables are evaluated in evaluate()
-}
+void Interpreter::visit(Variable& node) {}
 
-void Interpreter::visit(BinaryOp& node) {
-    // Nothing to do here - binary ops are evaluated in evaluate()
-}
+void Interpreter::visit(BinaryOp& node) {}
 
 void Interpreter::visit(VarDecl& node) {
-    // Объявление переменной: добавляем в таблицу со значением 0
     if (variables.find(node.name) == variables.end()) {
         variables[node.name] = 0;
     }
-    // Если переменная уже существует, ничего не делаем
 }
 
 void Interpreter::visit(Assignment& node) {
@@ -54,7 +44,11 @@ void Interpreter::visit(IfStmt& node) {
     }
 }
 
-// ========== Приватные методы ==========
+void Interpreter::visit(BlockStatement& node) {
+    for (auto& stmt : node.statements) {
+        stmt->accept(*this);
+    }
+}
 
 int Interpreter::evaluate(Expression* expr) {
     class Evaluator : public ASTVisitor {
@@ -108,6 +102,7 @@ int Interpreter::evaluate(Expression* expr) {
         void visit(Assignment&) override {}
         void visit(PrintStmt&) override {}
         void visit(IfStmt&) override {}
+        void visit(BlockStatement&) override {}
     };
     
     Evaluator eval;

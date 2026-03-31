@@ -98,6 +98,18 @@ public:
     std::string toString() const override;
 };
 
+// Блок инструкций { ... }
+class BlockStatement : public Statement {
+public:
+    std::vector<std::unique_ptr<Statement>> statements;
+    
+    BlockStatement() = default;
+    void addStatement(std::unique_ptr<Statement> stmt);
+    
+    void accept(ASTVisitor& visitor) override;
+    std::string toString() const override;
+};
+
 // Программа
 class Program : public ASTNode {
 public:
@@ -120,4 +132,5 @@ public:
     virtual void visit(Assignment& node) = 0;
     virtual void visit(PrintStmt& node) = 0;
     virtual void visit(IfStmt& node) = 0;
+    virtual void visit(BlockStatement& node) = 0;
 };

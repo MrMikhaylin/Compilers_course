@@ -1,15 +1,24 @@
 #pragma once
 
 #include "ast.hpp"
-#include <unordered_map>
+#include "scope.hpp"
+#include <stack>
+#include <vector>
 #include <string>
 
-class Interpreter : public ASTVisitor {
+class ScopeBuilder : public ASTVisitor {
 private:
-    std::unordered_map<std::string, int> variables;
-    int evaluate(Expression* expr);
+    std::unique_ptr<Scope> globalScope;
+    Scope* currentScope;
+    std::stack<Scope*> scopeStack;
+    std::vector<std::string> errors;
+    
+    void enterScope(const std::string& name);
+    void exitScope();
     
 public:
+    ScopeBuilder();
+    
     void visit(Program& node) override;
     void visit(NumberLiteral& node) override;
     void visit(Variable& node) override;
@@ -19,4 +28,7 @@ public:
     void visit(PrintStmt& node) override;
     void visit(IfStmt& node) override;
     void visit(BlockStatement& node) override;
+    
+    Scope* getGlobalScope() const { return globalScope.get(); }
+    void reportErrors();
 };

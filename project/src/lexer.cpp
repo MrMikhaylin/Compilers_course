@@ -35,7 +35,6 @@ void Lexer::skipWhitespace() {
 }
 
 void Lexer::skipComment() {
-    // Пока поддерживаем только // комментарии
     if (peek() == '/' && pos + 1 < input.length() && input[pos + 1] == '/') {
         while (peek() != '\n' && peek() != '\0') {
             advance();
@@ -76,25 +75,26 @@ std::vector<Token> Lexer::tokenize() {
     
     while (pos < input.length()) {
         skipWhitespace();
-        skipComment();
         
         char c = peek();
         
         if (c == '\0') break;
         
-        // Идентификаторы и ключевые слова
+        if (c == '/' && pos + 1 < input.length() && input[pos + 1] == '/') {
+            skipComment();
+            continue;
+        }
+        
         if (isalpha(c)) {
             tokens.push_back(readIdentifier());
             continue;
         }
         
-        // Числа
         if (isdigit(c)) {
             tokens.push_back(readNumber());
             continue;
         }
         
-        // Обработка операторов и разделителей
         int startLine = line;
         int startCol = column;
         
@@ -114,12 +114,7 @@ std::vector<Token> Lexer::tokenize() {
             case '*': advance(); tokens.push_back(Token(TokenType::MULTIPLY, "*", startLine, startCol)); break;
             case '/': 
                 advance();
-                if (peek() == '/') {
-                    // Это комментарий, пропускаем
-                    skipComment();
-                } else {
-                    tokens.push_back(Token(TokenType::DIVIDE, "/", startLine, startCol));
-                }
+                tokens.push_back(Token(TokenType::DIVIDE, "/", startLine, startCol));
                 break;
                 
             case ';': advance(); tokens.push_back(Token(TokenType::SEMICOLON, ";", startLine, startCol)); break;
@@ -130,6 +125,10 @@ std::vector<Token> Lexer::tokenize() {
             case '}': advance(); tokens.push_back(Token(TokenType::RBRACE, "}", startLine, startCol)); break;
                 
             default:
+                if (isspace(c)) {
+                    advance();
+                    break;
+                }
                 std::cerr << "Unknown character at " << line << ":" << column << ": " << c << std::endl;
                 advance();
                 tokens.push_back(Token(TokenType::UNKNOWN, std::string(1, c), startLine, startCol));

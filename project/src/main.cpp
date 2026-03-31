@@ -2,20 +2,24 @@
 #include "parser.hpp"
 #include "visitors/print_visitor.hpp"
 #include "visitors/interpreter.hpp"
+#include "visitors/scope_builder.hpp"
 #include <fstream>
 #include <iostream>
 #include <memory>
 
 int main() {
-    // Тестовая программа
     std::string testProgram = R"(
         declare x: int;
         x = 42;
         if (x == 0) {
+            declare x: int;
+            x = 10;
             print(x);
         } else {
             print(x + 1);
         }
+        print(x);
+        declare x: int;
     )";
     
     try {
@@ -33,22 +37,21 @@ int main() {
         Parser parser(tokens);
         auto program = parser.parse();
         std::cout << "Парсинг успешен!" << std::endl << std::endl;
-
-        std::cout << "=== Печать AST в файл ===" << std::endl;
-        std::ofstream astFile("ast_output.txt");
-        if (astFile.is_open()) {
-            PrintVisitor filePrinter(astFile);
-            program->accept(filePrinter);
-            astFile.close();
-            std::cout << "AST сохранён в файл: ast_output.txt" << std::endl;
-        } else {
-            std::cout << "Не удалось создать файл ast_output.txt" << std::endl;
-        }
-        std::cout << std::endl;
         
         std::cout << "=== AST дерево ===" << std::endl;
         PrintVisitor consolePrinter(std::cout);
         program->accept(consolePrinter);
+        std::cout << std::endl;
+        
+        std::cout << "=== Построение дерева скоупов ===" << std::endl;
+        ScopeBuilder scopeBuilder;
+        program->accept(scopeBuilder);
+        
+        std::cout << "Дерево скоупов:" << std::endl;
+        scopeBuilder.getGlobalScope()->dump();
+        std::cout << std::endl;
+        
+        scopeBuilder.reportErrors();
         std::cout << std::endl;
         
         std::cout << "=== Выполнение программы ===" << std::endl;

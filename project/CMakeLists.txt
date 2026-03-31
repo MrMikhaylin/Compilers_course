@@ -5,13 +5,16 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories(include)
+include_directories(include/visitors)
 
 set(SOURCES
     src/lexer.cpp
     src/ast.cpp
     src/parser.cpp
+    src/scope.cpp
     src/visitors/print_visitor.cpp
     src/visitors/interpreter.cpp
+    src/visitors/scope_builder.cpp
 )
 
 add_executable(minilang 

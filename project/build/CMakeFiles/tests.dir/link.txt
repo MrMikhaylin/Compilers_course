@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/tests.dir/tests/test_parser.cpp.o CMakeFiles/tests.dir/src/lexer.cpp.o CMakeFiles/tests.dir/src/ast.cpp.o CMakeFiles/tests.dir/src/parser.cpp.o CMakeFiles/tests.dir/src/visitors/print_visitor.cpp.o CMakeFiles/tests.dir/src/visitors/interpreter.cpp.o -o tests  /usr/lib/x86_64-linux-gnu/libgtest_main.a /usr/lib/x86_64-linux-gnu/libgtest.a 
