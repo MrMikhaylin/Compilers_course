@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/minilang.dir/src/main.cpp.o CMakeFiles/minilang.dir/src/lexer.cpp.o CMakeFiles/minilang.dir/src/ast.cpp.o CMakeFiles/minilang.dir/src/parser.cpp.o CMakeFiles/minilang.dir/src/visitors/print_visitor.cpp.o CMakeFiles/minilang.dir/src/visitors/interpreter.cpp.o -o minilang 

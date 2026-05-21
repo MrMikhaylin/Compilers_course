@@ -2,32 +2,22 @@
 #include <iostream>
 #include <stdexcept>
 
-// ========== Публичные методы ==========
-
 void Interpreter::visit(Program& node) {
     for (auto& stmt : node.statements) {
         stmt->accept(*this);
     }
 }
 
-void Interpreter::visit(NumberLiteral& node) {
-    // Nothing to do here - numbers are evaluated in evaluate()
-}
+void Interpreter::visit(NumberLiteral& node) {}
 
-void Interpreter::visit(Variable& node) {
-    // Nothing to do here - variables are evaluated in evaluate()
-}
+void Interpreter::visit(Variable& node) {}
 
-void Interpreter::visit(BinaryOp& node) {
-    // Nothing to do here - binary ops are evaluated in evaluate()
-}
+void Interpreter::visit(BinaryOp& node) {}
 
 void Interpreter::visit(VarDecl& node) {
-    // Объявление переменной: добавляем в таблицу со значением 0
     if (variables.find(node.name) == variables.end()) {
         variables[node.name] = 0;
     }
-    // Если переменная уже существует, ничего не делаем
 }
 
 void Interpreter::visit(Assignment& node) {
@@ -54,7 +44,13 @@ void Interpreter::visit(IfStmt& node) {
     }
 }
 
-// ========== Приватные методы ==========
+void Interpreter::visit(WhileStmt& node) {
+    while (evaluate(node.condition.get()) != 0) {
+        for (auto& stmt : node.body) {
+            stmt->accept(*this);
+        }
+    }
+}
 
 int Interpreter::evaluate(Expression* expr) {
     class Evaluator : public ASTVisitor {
@@ -85,21 +81,21 @@ int Interpreter::evaluate(Expression* expr) {
             node.right->accept(rightEval);
             int right = rightEval.result;
             
-            if (node.op == "+") {
-                result = left + right;
-            } else if (node.op == "-") {
-                result = left - right;
-            } else if (node.op == "*") {
-                result = left * right;
-            } else if (node.op == "/") {
-                if (right == 0) {
-                    throw std::runtime_error("Division by zero");
-                }
-                result = left / right;
-            } else if (node.op == "==") {
-                result = (left == right) ? 1 : 0;
-            } else {
-                throw std::runtime_error("Unknown operator: " + node.op);
+            switch (node.op) {
+                case BinOpType::PLUS: result = left + right; break;
+                case BinOpType::MINUS: result = left - right; break;
+                case BinOpType::MULTIPLY: result = left * right; break;
+                case BinOpType::DIVIDE:
+                    if (right == 0) throw std::runtime_error("Division by zero");
+                    result = left / right;
+                    break;
+                case BinOpType::EQUALS: result = (left == right) ? 1 : 0; break;
+                case BinOpType::LESS: result = (left < right) ? 1 : 0; break;
+                case BinOpType::GREATER: result = (left > right) ? 1 : 0; break;
+                case BinOpType::LESS_EQUAL: result = (left <= right) ? 1 : 0; break;
+                case BinOpType::GREATER_EQUAL: result = (left >= right) ? 1 : 0; break;
+                case BinOpType::NOT_EQUAL: result = (left != right) ? 1 : 0; break;
+                default: throw std::runtime_error("Unknown operator");
             }
         }
         
@@ -108,6 +104,7 @@ int Interpreter::evaluate(Expression* expr) {
         void visit(Assignment&) override {}
         void visit(PrintStmt&) override {}
         void visit(IfStmt&) override {}
+        void visit(WhileStmt&) override {}
     };
     
     Evaluator eval;

@@ -2,9 +2,7 @@
 #include "lexer.hpp"
 #include "parser.hpp"
 #include "visitors/print_visitor.hpp"
-#include <sstream>
 
-// Тест: объявление переменной
 TEST(ParserTest, VarDecl) {
     std::string code = "declare x: int;";
     Lexer lexer(code);
@@ -19,7 +17,6 @@ TEST(ParserTest, VarDecl) {
     EXPECT_EQ(decl->type, "int");
 }
 
-// Тест: присваивание
 TEST(ParserTest, Assignment) {
     std::string code = "x = 42;";
     Lexer lexer(code);
@@ -37,7 +34,6 @@ TEST(ParserTest, Assignment) {
     EXPECT_EQ(num->value, 42);
 }
 
-// Тест: if-else
 TEST(ParserTest, IfStmt) {
     std::string code = "if (x == 0) { print(1); } else { print(2); }";
     Lexer lexer(code);
@@ -49,18 +45,28 @@ TEST(ParserTest, IfStmt) {
     auto* ifstmt = dynamic_cast<IfStmt*>(program->statements[0].get());
     ASSERT_NE(ifstmt, nullptr);
     
-    // Проверяем, что then-ветка не пустая
     ASSERT_EQ(ifstmt->thenBranch.size(), 1);
     auto* printThen = dynamic_cast<PrintStmt*>(ifstmt->thenBranch[0].get());
     ASSERT_NE(printThen, nullptr);
     
-    // Проверяем, что else-ветка не пустая
     ASSERT_EQ(ifstmt->elseBranch.size(), 1);
     auto* printElse = dynamic_cast<PrintStmt*>(ifstmt->elseBranch[0].get());
     ASSERT_NE(printElse, nullptr);
 }
 
-// Тест: арифметическое выражение
+TEST(ParserTest, WhileStmt) {
+    std::string code = "while (x < 10) { x = x + 1; }";
+    Lexer lexer(code);
+    auto tokens = lexer.tokenize();
+    Parser parser(tokens);
+    auto program = parser.parse();
+    
+    ASSERT_EQ(program->statements.size(), 1);
+    auto* whileStmt = dynamic_cast<WhileStmt*>(program->statements[0].get());
+    ASSERT_NE(whileStmt, nullptr);
+    ASSERT_EQ(whileStmt->body.size(), 1);
+}
+
 TEST(ParserTest, BinaryExpression) {
     std::string code = "x = 5 + 3 * 2;";
     Lexer lexer(code);
@@ -69,15 +75,25 @@ TEST(ParserTest, BinaryExpression) {
     auto program = parser.parse();
     
     auto* assign = dynamic_cast<Assignment*>(program->statements[0].get());
+    ASSERT_NE(assign, nullptr);
     auto* binop = dynamic_cast<BinaryOp*>(assign->value.get());
-    
-    // Проверяем, что приоритет операций соблюден: 3 * 2 вычисляется раньше
     ASSERT_NE(binop, nullptr);
-    EXPECT_EQ(binop->op, "+");
+    
+    EXPECT_EQ(binop->op, BinOpType::PLUS);
     
     auto* right = dynamic_cast<BinaryOp*>(binop->right.get());
     ASSERT_NE(right, nullptr);
-    EXPECT_EQ(right->op, "*");
+    EXPECT_EQ(right->op, BinOpType::MULTIPLY);
+}
+
+TEST(ParserTest, BlockStatement) {
+    std::string code = "{ declare x: int; x = 5; print(x); }";
+    Lexer lexer(code);
+    auto tokens = lexer.tokenize();
+    Parser parser(tokens);
+    auto program = parser.parse();
+    
+    ASSERT_EQ(program->statements.size(), 3);
 }
 
 int main(int argc, char** argv) {

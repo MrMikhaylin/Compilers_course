@@ -1,16 +1,16 @@
 #include "lexer.hpp"
 #include <iostream>
 
-Lexer::Lexer(const std::string& input) : input(input), pos(0), line(1), column(1) {
-    // Инициализация ключевых слов
-    keywords = {
-        {"declare", TokenType::DECLARE},
-        {"int", TokenType::INT},
-        {"if", TokenType::IF},
-        {"else", TokenType::ELSE},
-        {"print", TokenType::PRINT}
-    };
-}
+const std::unordered_map<std::string, TokenType> Lexer::KEYWORDS = {
+    {"declare", TokenType::DECLARE},
+    {"int", TokenType::INT},
+    {"if", TokenType::IF},
+    {"else", TokenType::ELSE},
+    {"print", TokenType::PRINT},
+    {"while", TokenType::WHILE}
+};
+
+Lexer::Lexer(const std::string& input) : input(input), pos(0), line(1), column(1) {}
 
 char Lexer::peek() const {
     if (pos >= input.length()) return '\0';
@@ -35,7 +35,6 @@ void Lexer::skipWhitespace() {
 }
 
 void Lexer::skipComment() {
-    // Пока поддерживаем только // комментарии
     if (peek() == '/' && pos + 1 < input.length() && input[pos + 1] == '/') {
         while (peek() != '\n' && peek() != '\0') {
             advance();
@@ -52,9 +51,8 @@ Token Lexer::readIdentifier() {
         value += advance();
     }
     
-    // Проверяем, является ли это ключевым словом
-    auto it = keywords.find(value);
-    TokenType type = (it != keywords.end()) ? it->second : TokenType::IDENTIFIER;
+    auto it = KEYWORDS.find(value);
+    TokenType type = (it != KEYWORDS.end()) ? it->second : TokenType::IDENTIFIER;
     
     return Token(type, value, startLine, startCol);
 }
@@ -82,19 +80,16 @@ std::vector<Token> Lexer::tokenize() {
         
         if (c == '\0') break;
         
-        // Идентификаторы и ключевые слова
         if (isalpha(c)) {
             tokens.push_back(readIdentifier());
             continue;
         }
         
-        // Числа
         if (isdigit(c)) {
             tokens.push_back(readNumber());
             continue;
         }
         
-        // Обработка операторов и разделителей
         int startLine = line;
         int startCol = column;
         
@@ -108,6 +103,37 @@ std::vector<Token> Lexer::tokenize() {
                     tokens.push_back(Token(TokenType::ASSIGN, "=", startLine, startCol));
                 }
                 break;
+            
+            case '<':
+                advance();
+                if (peek() == '=') {
+                    advance();
+                    tokens.push_back(Token(TokenType::LESS_EQUAL, "<=", startLine, startCol));
+                } else {
+                    tokens.push_back(Token(TokenType::LESS, "<", startLine, startCol));
+                }
+                break;
+            
+            case '>':
+                advance();
+                if (peek() == '=') {
+                    advance();
+                    tokens.push_back(Token(TokenType::GREATER_EQUAL, ">=", startLine, startCol));
+                } else {
+                    tokens.push_back(Token(TokenType::GREATER, ">", startLine, startCol));
+                }
+                break;
+            
+            case '!':
+                advance();
+                if (peek() == '=') {
+                    advance();
+                    tokens.push_back(Token(TokenType::NOT_EQUAL, "!=", startLine, startCol));
+                } else {
+                    std::cerr << "Unknown character at " << line << ":" << column << ": " << c << std::endl;
+                    tokens.push_back(Token(TokenType::UNKNOWN, std::string(1, c), startLine, startCol));
+                }
+                break;
                 
             case '+': advance(); tokens.push_back(Token(TokenType::PLUS, "+", startLine, startCol)); break;
             case '-': advance(); tokens.push_back(Token(TokenType::MINUS, "-", startLine, startCol)); break;
@@ -115,7 +141,6 @@ std::vector<Token> Lexer::tokenize() {
             case '/': 
                 advance();
                 if (peek() == '/') {
-                    // Это комментарий, пропускаем
                     skipComment();
                 } else {
                     tokens.push_back(Token(TokenType::DIVIDE, "/", startLine, startCol));
