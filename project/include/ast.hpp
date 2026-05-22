@@ -27,6 +27,20 @@ public:
     virtual ~Statement() = default;
 };
 
+// Типы операций (enum вместо string)
+enum class BinOpType {
+    PLUS,
+    MINUS,
+    MULTIPLY,
+    DIVIDE,
+    EQUALS,
+    LESS,
+    GREATER,
+    LESS_EQUAL,
+    GREATER_EQUAL,
+    NOT_EQUAL
+};
+
 // Числовой литерал
 class NumberLiteral : public Expression {
 public:
@@ -48,10 +62,10 @@ public:
 // Бинарная операция
 class BinaryOp : public Expression {
 public:
-    std::string op;
+    BinOpType op;
     std::unique_ptr<Expression> left;
     std::unique_ptr<Expression> right;
-    BinaryOp(const std::string& o, std::unique_ptr<Expression> l, std::unique_ptr<Expression> r);
+    BinaryOp(BinOpType o, std::unique_ptr<Expression> l, std::unique_ptr<Expression> r);
     void accept(ASTVisitor& visitor) override;
     std::string toString() const override;
 };
@@ -98,6 +112,17 @@ public:
     std::string toString() const override;
 };
 
+// Цикл while
+class WhileStmt : public Statement {
+public:
+    std::unique_ptr<Expression> condition;
+    std::vector<std::unique_ptr<Statement>> body;
+    WhileStmt(std::unique_ptr<Expression> cond,
+              std::vector<std::unique_ptr<Statement>> bodyStmts);
+    void accept(ASTVisitor& visitor) override;
+    std::string toString() const override;
+};
+
 // Блок инструкций { ... }
 class BlockStatement : public Statement {
 public:
@@ -132,5 +157,10 @@ public:
     virtual void visit(Assignment& node) = 0;
     virtual void visit(PrintStmt& node) = 0;
     virtual void visit(IfStmt& node) = 0;
+    virtual void visit(WhileStmt& node) = 0;
     virtual void visit(BlockStatement& node) = 0;
 };
+
+// Вспомогательная функция для преобразования BinOpType в строку
+std::string binOpTypeToString(BinOpType op);
+BinOpType stringToBinOpType(const std::string& op);

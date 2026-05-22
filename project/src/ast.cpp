@@ -1,6 +1,37 @@
 #include "ast.hpp"
 #include <sstream>
 #include <iostream>
+#include <stdexcept>
+
+std::string binOpTypeToString(BinOpType op) {
+    switch (op) {
+        case BinOpType::PLUS: return "+";
+        case BinOpType::MINUS: return "-";
+        case BinOpType::MULTIPLY: return "*";
+        case BinOpType::DIVIDE: return "/";
+        case BinOpType::EQUALS: return "==";
+        case BinOpType::LESS: return "<";
+        case BinOpType::GREATER: return ">";
+        case BinOpType::LESS_EQUAL: return "<=";
+        case BinOpType::GREATER_EQUAL: return ">=";
+        case BinOpType::NOT_EQUAL: return "!=";
+        default: return "unknown";
+    }
+}
+
+BinOpType stringToBinOpType(const std::string& op) {
+    if (op == "+") return BinOpType::PLUS;
+    if (op == "-") return BinOpType::MINUS;
+    if (op == "*") return BinOpType::MULTIPLY;
+    if (op == "/") return BinOpType::DIVIDE;
+    if (op == "==") return BinOpType::EQUALS;
+    if (op == "<") return BinOpType::LESS;
+    if (op == ">") return BinOpType::GREATER;
+    if (op == "<=") return BinOpType::LESS_EQUAL;
+    if (op == ">=") return BinOpType::GREATER_EQUAL;
+    if (op == "!=") return BinOpType::NOT_EQUAL;
+    throw std::runtime_error("Unknown operator: " + op);
+}
 
 // --- NumberLiteral ---
 NumberLiteral::NumberLiteral(int val) : value(val) {}
@@ -25,7 +56,7 @@ std::string Variable::toString() const {
 }
 
 // --- BinaryOp ---
-BinaryOp::BinaryOp(const std::string& o, std::unique_ptr<Expression> l, std::unique_ptr<Expression> r)
+BinaryOp::BinaryOp(BinOpType o, std::unique_ptr<Expression> l, std::unique_ptr<Expression> r)
     : op(o), left(std::move(l)), right(std::move(r)) {}
 
 void BinaryOp::accept(ASTVisitor& visitor) { 
@@ -33,7 +64,7 @@ void BinaryOp::accept(ASTVisitor& visitor) {
 }
 
 std::string BinaryOp::toString() const {
-    return "BinaryOp(" + op + ", " + left->toString() + ", " + right->toString() + ")";
+    return "BinaryOp(" + binOpTypeToString(op) + ", " + left->toString() + ", " + right->toString() + ")";
 }
 
 // --- VarDecl ---
@@ -87,6 +118,24 @@ std::string IfStmt::toString() const {
     }
     result += "], [";
     for (const auto& stmt : elseBranch) {
+        result += stmt->toString() + ", ";
+    }
+    result += "])";
+    return result;
+}
+
+// --- WhileStmt ---
+WhileStmt::WhileStmt(std::unique_ptr<Expression> cond,
+                     std::vector<std::unique_ptr<Statement>> bodyStmts)
+    : condition(std::move(cond)), body(std::move(bodyStmts)) {}
+
+void WhileStmt::accept(ASTVisitor& visitor) {
+    visitor.visit(*this);
+}
+
+std::string WhileStmt::toString() const {
+    std::string result = "While(" + condition->toString() + ", [";
+    for (const auto& stmt : body) {
         result += stmt->toString() + ", ";
     }
     result += "])";

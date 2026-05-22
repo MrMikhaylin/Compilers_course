@@ -3,7 +3,6 @@
 #include "token.hpp"
 #include <string>
 #include <vector>
-#include <cctype>
 #include <unordered_map>
 
 class Lexer {
@@ -13,7 +12,7 @@ private:
     int line;
     int column;
     
-    std::unordered_map<std::string, TokenType> keywords;
+    static const std::unordered_map<std::string, TokenType> KEYWORDS;
     
     char peek() const;
     char advance();
@@ -23,6 +22,6 @@ private:
     Token readNumber();
     
 public:
-    Lexer(const std::string& input);
+    explicit Lexer(const std::string& input);
     std::vector<Token> tokenize();
 };

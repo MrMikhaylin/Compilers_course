@@ -8,18 +8,17 @@
 #include <memory>
 
 int main() {
+    // Тестовая программа с циклом while и операторами сравнения
     std::string testProgram = R"(
         declare x: int;
-        x = 42;
-        if (x == 0) {
-            declare x: int;
-            x = 10;
-            print(x);
-        } else {
-            print(x + 1);
+        declare y: int;
+        x = 0;
+        y = 0;
+        while (x < 5) {
+            y = y + x;
+            x = x + 1;
         }
-        print(x);
-        declare x: int;
+        print(y);
     )";
     
     try {

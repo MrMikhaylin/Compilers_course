@@ -27,6 +27,7 @@ public:
     void visit(Assignment& node) override;
     void visit(PrintStmt& node) override;
     void visit(IfStmt& node) override;
+    void visit(WhileStmt& node) override;
     void visit(BlockStatement& node) override;
     
     Scope* getGlobalScope() const { return globalScope.get(); }

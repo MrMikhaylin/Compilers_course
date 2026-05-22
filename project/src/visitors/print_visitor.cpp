@@ -29,7 +29,7 @@ void PrintVisitor::visit(Variable& node) {
 }
 
 void PrintVisitor::visit(BinaryOp& node) {
-    out << "BinaryOp(" << node.op << ")\n";
+    out << "BinaryOp(" << binOpTypeToString(node.op) << ")\n";
     indent++;
     printIndent();
     node.left->accept(*this);
@@ -83,6 +83,22 @@ void PrintVisitor::visit(IfStmt& node) {
         }
         indent--;
     }
+}
+
+void PrintVisitor::visit(WhileStmt& node) {
+    out << "While (condition):\n";
+    indent++;
+    printIndent();
+    node.condition->accept(*this);
+    indent--;
+    
+    out << "Body:\n";
+    indent++;
+    for (auto& stmt : node.body) {
+        printIndent();
+        stmt->accept(*this);
+    }
+    indent--;
 }
 
 void PrintVisitor::visit(BlockStatement& node) {

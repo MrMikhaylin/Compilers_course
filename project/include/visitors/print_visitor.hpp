@@ -3,6 +3,7 @@
 #include "ast.hpp"
 #include <ostream>
 
+// Визитор для печати AST в поток (файл или консоль)
 class PrintVisitor : public ASTVisitor {
 private:
     std::ostream& out;
@@ -13,6 +14,7 @@ private:
 public:
     PrintVisitor(std::ostream& os = std::cout);
     
+    // Методы visit для всех узлов AST
     void visit(Program& node) override;
     void visit(NumberLiteral& node) override;
     void visit(Variable& node) override;
@@ -21,5 +23,6 @@ public:
     void visit(Assignment& node) override;
     void visit(PrintStmt& node) override;
     void visit(IfStmt& node) override;
+    void visit(WhileStmt& node) override;
     void visit(BlockStatement& node) override;
 };

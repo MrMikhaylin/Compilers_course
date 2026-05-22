@@ -23,7 +23,9 @@ void ScopeBuilder::visit(Program& node) {
     }
 }
 
-void ScopeBuilder::visit(NumberLiteral& /*node*/) {}
+void ScopeBuilder::visit(NumberLiteral& /*node*/) {
+    // Nothing to do
+}
 
 void ScopeBuilder::visit(Variable& node) {
     Symbol* sym = currentScope->lookup(node.name);
@@ -80,6 +82,16 @@ void ScopeBuilder::visit(IfStmt& node) {
         }
         exitScope();
     }
+}
+
+void ScopeBuilder::visit(WhileStmt& node) {
+    node.condition->accept(*this);
+    
+    enterScope("while-body");
+    for (auto& stmt : node.body) {
+        stmt->accept(*this);
+    }
+    exitScope();
 }
 
 void ScopeBuilder::visit(BlockStatement& node) {
