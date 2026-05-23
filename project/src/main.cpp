@@ -8,7 +8,7 @@
 #include <memory>
 
 int main() {
-    // Тестовая программа с циклом while и операторами сравнения
+    // Тестовая программа из задания
     std::string testProgram = R"(
         declare x: int;
         declare y: int;
@@ -42,7 +42,7 @@ int main() {
         program->accept(consolePrinter);
         std::cout << std::endl;
         
-        std::cout << "=== Построение дерева скоупов ===" << std::endl;
+        std::cout << "=== Построение дерева скоупов (ScopeBuilder) ===" << std::endl;
         ScopeBuilder scopeBuilder;
         program->accept(scopeBuilder);
         
@@ -53,7 +53,7 @@ int main() {
         scopeBuilder.reportErrors();
         std::cout << std::endl;
         
-        std::cout << "=== Выполнение программы ===" << std::endl;
+        std::cout << "=== Выполнение программы (Interpreter) ===" << std::endl;
         Interpreter interpreter;
         program->accept(interpreter);
         std::cout << std::endl;

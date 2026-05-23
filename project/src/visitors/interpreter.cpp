@@ -2,7 +2,88 @@
 #include <iostream>
 #include <stdexcept>
 
-// ========== Публичные методы ==========
+Interpreter::Interpreter() {
+    enterScope();  // Глобальный скоуп
+}
+
+void Interpreter::enterScope() {
+    scopeStack.push(std::unordered_map<std::string, int>());
+}
+
+void Interpreter::exitScope() {
+    if (scopeStack.size() > 1) {
+        scopeStack.pop();
+    }
+}
+
+void Interpreter::declareVariable(const std::string& name, int value) {
+    auto& currentScope = scopeStack.top();
+    if (currentScope.find(name) != currentScope.end()) {
+        return;  // Уже объявлена в этом скоупе - игнорируем
+    }
+    currentScope[name] = value;
+}
+
+void Interpreter::setVariable(const std::string& name, int value) {
+    // Временно вытаскиваем все скоупы
+    std::vector<std::unordered_map<std::string, int>> scopes;
+    while (!scopeStack.empty()) {
+        scopes.push_back(scopeStack.top());
+        scopeStack.pop();
+    }
+    
+    bool found = false;
+    // Идём от глобального к локальному (обратный порядок)
+    for (int i = scopes.size() - 1; i >= 0; --i) {
+        auto it = scopes[i].find(name);
+        if (it != scopes[i].end()) {
+            it->second = value;
+            found = true;
+            break;
+        }
+    }
+    
+    // Восстанавливаем стек
+    for (int i = scopes.size() - 1; i >= 0; --i) {
+        scopeStack.push(scopes[i]);
+    }
+    
+    if (!found) {
+        throw std::runtime_error("Variable not declared: " + name);
+    }
+}
+
+int Interpreter::getVariable(const std::string& name) {
+    // Временно вытаскиваем все скоупы
+    std::vector<std::unordered_map<std::string, int>> scopes;
+    while (!scopeStack.empty()) {
+        scopes.push_back(scopeStack.top());
+        scopeStack.pop();
+    }
+    
+    int value = 0;
+    bool found = false;
+    // Идём от глобального к локальному (обратный порядок)
+    for (int i = scopes.size() - 1; i >= 0; --i) {
+        auto it = scopes[i].find(name);
+        if (it != scopes[i].end()) {
+            value = it->second;
+            found = true;
+            break;
+        }
+    }
+    
+    // Восстанавливаем стек
+    for (int i = scopes.size() - 1; i >= 0; --i) {
+        scopeStack.push(scopes[i]);
+    }
+    
+    if (!found) {
+        throw std::runtime_error("Variable not declared: " + name);
+    }
+    
+    return value;
+}
 
 void Interpreter::visit(Program& node) {
     for (auto& stmt : node.statements) {
@@ -10,29 +91,19 @@ void Interpreter::visit(Program& node) {
     }
 }
 
-void Interpreter::visit(NumberLiteral& node) {
-    // Nothing to do here - numbers are evaluated in evaluate()
-}
+void Interpreter::visit(NumberLiteral& node) {}
 
-void Interpreter::visit(Variable& node) {
-    // Nothing to do here - variables are evaluated in evaluate()
-}
+void Interpreter::visit(Variable& node) {}
 
-void Interpreter::visit(BinaryOp& node) {
-    // Nothing to do here - binary ops are evaluated in evaluate()
-}
+void Interpreter::visit(BinaryOp& node) {}
 
 void Interpreter::visit(VarDecl& node) {
-    // Объявление переменной: добавляем в таблицу со значением 0
-    if (variables.find(node.name) == variables.end()) {
-        variables[node.name] = 0;
-    }
-    // Если переменная уже существует, ничего не делаем
+    declareVariable(node.name, 0);
 }
 
 void Interpreter::visit(Assignment& node) {
     int value = evaluate(node.value.get());
-    variables[node.name] = value;
+    setVariable(node.name, value);
 }
 
 void Interpreter::visit(PrintStmt& node) {
@@ -63,39 +134,35 @@ void Interpreter::visit(WhileStmt& node) {
 }
 
 void Interpreter::visit(BlockStatement& node) {
+    enterScope();
     for (auto& stmt : node.statements) {
         stmt->accept(*this);
     }
+    exitScope();
 }
-
-// ========== Приватные методы ==========
 
 int Interpreter::evaluate(Expression* expr) {
     class Evaluator : public ASTVisitor {
     public:
         int result;
-        std::unordered_map<std::string, int>* vars;
+        Interpreter* interpreter;
         
         void visit(NumberLiteral& node) override {
             result = node.value;
         }
         
         void visit(Variable& node) override {
-            auto it = vars->find(node.name);
-            if (it == vars->end()) {
-                throw std::runtime_error("Variable not declared: " + node.name);
-            }
-            result = it->second;
+            result = interpreter->getVariable(node.name);
         }
         
         void visit(BinaryOp& node) override {
             Evaluator leftEval;
-            leftEval.vars = vars;
+            leftEval.interpreter = interpreter;
             node.left->accept(leftEval);
             int left = leftEval.result;
             
             Evaluator rightEval;
-            rightEval.vars = vars;
+            rightEval.interpreter = interpreter;
             node.right->accept(rightEval);
             int right = rightEval.result;
             
@@ -104,9 +171,7 @@ int Interpreter::evaluate(Expression* expr) {
                 case BinOpType::MINUS: result = left - right; break;
                 case BinOpType::MULTIPLY: result = left * right; break;
                 case BinOpType::DIVIDE:
-                    if (right == 0) {
-                        throw std::runtime_error("Division by zero");
-                    }
+                    if (right == 0) throw std::runtime_error("Division by zero");
                     result = left / right;
                     break;
                 case BinOpType::EQUALS: result = (left == right) ? 1 : 0; break;
@@ -129,7 +194,7 @@ int Interpreter::evaluate(Expression* expr) {
     };
     
     Evaluator eval;
-    eval.vars = &variables;
+    eval.interpreter = this;
     expr->accept(eval);
     return eval.result;
 }

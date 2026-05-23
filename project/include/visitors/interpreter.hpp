@@ -2,19 +2,25 @@
 
 #include "ast.hpp"
 #include <unordered_map>
+#include <stack>
 #include <string>
 
-// Визитор для интерпретации программы
 class Interpreter : public ASTVisitor {
 private:
-    // Таблица переменных: имя -> значение
-    std::unordered_map<std::string, int> variables;
+    // Стек скоупов для поддержки shadowing
+    std::stack<std::unordered_map<std::string, int>> scopeStack;
     
-    // Вычисляет значение выражения
+    void enterScope();
+    void exitScope();
+    void declareVariable(const std::string& name, int value = 0);
+    void setVariable(const std::string& name, int value);
+    int getVariable(const std::string& name);
+    
     int evaluate(Expression* expr);
     
 public:
-    // Методы visit для всех узлов AST
+    Interpreter();
+    
     void visit(Program& node) override;
     void visit(NumberLiteral& node) override;
     void visit(Variable& node) override;

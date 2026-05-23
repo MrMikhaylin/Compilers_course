@@ -36,7 +36,15 @@ void Lexer::skipWhitespace() {
 
 void Lexer::skipComment() {
     if (peek() == '/' && pos + 1 < input.length() && input[pos + 1] == '/') {
+        // Пропускаем //
+        advance();
+        advance();
+        // Пропускаем всё до конца строки
         while (peek() != '\n' && peek() != '\0') {
+            advance();
+        }
+        // Пропускаем сам '\n' если он есть
+        if (peek() == '\n') {
             advance();
         }
     }
@@ -74,11 +82,16 @@ std::vector<Token> Lexer::tokenize() {
     
     while (pos < input.length()) {
         skipWhitespace();
-        skipComment();
+        
+        // Проверяем комментарий ДО того, как проверяем конец файла
+        if (peek() == '/' && pos + 1 < input.length() && input[pos + 1] == '/') {
+            skipComment();
+            continue;  // После комментария продолжаем цикл
+        }
+        
+        if (pos >= input.length()) break;
         
         char c = peek();
-        
-        if (c == '\0') break;
         
         if (isalpha(c)) {
             tokens.push_back(readIdentifier());
