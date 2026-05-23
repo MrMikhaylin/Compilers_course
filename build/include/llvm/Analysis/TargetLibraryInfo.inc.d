@@ -1,0 +1,1 @@
+TargetLibraryInfo.inc: /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/Analysis/TargetLibraryInfo.td /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/Analysis/TargetLibraryInfoImpl.td

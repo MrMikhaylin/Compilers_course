@@ -1,0 +1,28 @@
+include/llvm/IR/IntrinsicsR600.h: \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/Intrinsics.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/CodeGen/SDNodeProperties.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/CodeGen/ValueTypes.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsAArch64.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsAMDGPU.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsARM.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsBPF.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsDirectX.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsHexagon.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsHexagonDep.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsLoongArch.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsMips.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsNVVM.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsPowerPC.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsRISCV.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsRISCVXAndes.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsRISCVXCV.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsRISCVXMIPS.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsRISCVXTHead.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsRISCVXsf.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsSPIRV.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsSystemZ.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsVE.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsVEVL.gen.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsWebAssembly.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsX86.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/IR/IntrinsicsXCore.td

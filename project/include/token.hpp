@@ -4,16 +4,24 @@
 #include <unordered_map>
 
 enum class TokenType {
+    // Ключевые слова
     DECLARE,    // declare
     INT,        // int
     IF,         // if
     ELSE,       // else
     PRINT,      // print
     WHILE,      // while
+    CLASS,      // class
+    DEF,        // def (method)
+    NEW,        // new
+    THIS,       // this
+    RETURN,     // return
     
+    // Идентификаторы и литералы
     IDENTIFIER,
     NUMBER,
     
+    // Операторы
     ASSIGN,     // =
     EQUALS,     // ==
     LESS,       // <
@@ -25,14 +33,18 @@ enum class TokenType {
     MINUS,      // -
     MULTIPLY,   // *
     DIVIDE,     // /
+    DOT,        // .
     
+    // Разделители
     SEMICOLON,  // ;
     COLON,      // :
     LPAREN,     // (
     RPAREN,     // )
     LBRACE,     // {
     RBRACE,     // }
+    COMMA,      // ,
     
+    // Специальные
     END,
     UNKNOWN
 };

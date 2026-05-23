@@ -35,6 +35,13 @@ private:
     std::unique_ptr<Expression> parseAdditive();
     std::unique_ptr<Expression> parseMultiplicative();
     std::unique_ptr<Expression> parsePrimary();
+
+    std::unique_ptr<Statement> parseClassDecl();
+    std::unique_ptr<Statement> parseMethodDecl();
+    std::unique_ptr<MethodCall> parseMethodCall(const std::string& object);
+    std::unique_ptr<FieldAccess> parseFieldAccess(const std::string& object);
+    std::unique_ptr<Statement> parseReturnStmt();
+    std::unique_ptr<NewObject> parseNewObject();
     
 public:
     explicit Parser(const std::vector<Token>& tokens);

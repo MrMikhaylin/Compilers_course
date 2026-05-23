@@ -7,7 +7,12 @@ const std::unordered_map<std::string, TokenType> Lexer::KEYWORDS = {
     {"if", TokenType::IF},
     {"else", TokenType::ELSE},
     {"print", TokenType::PRINT},
-    {"while", TokenType::WHILE}
+    {"while", TokenType::WHILE},
+    {"class", TokenType::CLASS},
+    {"def", TokenType::DEF},
+    {"new", TokenType::NEW},
+    {"this", TokenType::THIS},
+    {"return", TokenType::RETURN}
 };
 
 Lexer::Lexer(const std::string& input) : input(input), pos(0), line(1), column(1) {}
@@ -36,14 +41,11 @@ void Lexer::skipWhitespace() {
 
 void Lexer::skipComment() {
     if (peek() == '/' && pos + 1 < input.length() && input[pos + 1] == '/') {
-        // Пропускаем //
         advance();
         advance();
-        // Пропускаем всё до конца строки
         while (peek() != '\n' && peek() != '\0') {
             advance();
         }
-        // Пропускаем сам '\n' если он есть
         if (peek() == '\n') {
             advance();
         }
@@ -83,10 +85,9 @@ std::vector<Token> Lexer::tokenize() {
     while (pos < input.length()) {
         skipWhitespace();
         
-        // Проверяем комментарий ДО того, как проверяем конец файла
         if (peek() == '/' && pos + 1 < input.length() && input[pos + 1] == '/') {
             skipComment();
-            continue;  // После комментария продолжаем цикл
+            continue;
         }
         
         if (pos >= input.length()) break;
@@ -146,6 +147,16 @@ std::vector<Token> Lexer::tokenize() {
                     std::cerr << "Unknown character at " << line << ":" << column << ": " << c << std::endl;
                     tokens.push_back(Token(TokenType::UNKNOWN, std::string(1, c), startLine, startCol));
                 }
+                break;
+            
+            case '.':
+                advance();
+                tokens.push_back(Token(TokenType::DOT, ".", startLine, startCol));
+                break;
+            
+            case ',':
+                advance();
+                tokens.push_back(Token(TokenType::COMMA, ",", startLine, startCol));
                 break;
                 
             case '+': advance(); tokens.push_back(Token(TokenType::PLUS, "+", startLine, startCol)); break;

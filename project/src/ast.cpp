@@ -177,3 +177,81 @@ std::string Program::toString() const {
     result += "])";
     return result;
 }
+
+// --- FieldDecl ---
+FieldDecl::FieldDecl(const std::string& n, const std::string& t) : name(n), type(t) {}
+void FieldDecl::accept(ASTVisitor& visitor) { visitor.visit(*this); }
+std::string FieldDecl::toString() const { return "Field(" + name + ": " + type + ")"; }
+
+// --- MethodDecl ---
+MethodDecl::MethodDecl(const std::string& n, const std::string& ret) : name(n), returnType(ret) {}
+void MethodDecl::addParameter(const std::string& param) { parameters.push_back(param); }
+void MethodDecl::addStatement(std::unique_ptr<Statement> stmt) { body.push_back(std::move(stmt)); }
+void MethodDecl::accept(ASTVisitor& visitor) { visitor.visit(*this); }
+std::string MethodDecl::toString() const {
+    std::string result = "Method(" + name + "(";
+    for (size_t i = 0; i < parameters.size(); ++i) {
+        if (i > 0) result += ", ";
+        result += parameters[i];
+    }
+    result += "): " + returnType + ")";
+    return result;
+}
+
+// --- ClassDecl ---
+ClassDecl::ClassDecl(const std::string& n) : name(n) {}
+void ClassDecl::addField(std::unique_ptr<FieldDecl> field) { fields.push_back(std::move(field)); }
+void ClassDecl::addMethod(std::unique_ptr<MethodDecl> method) { methods.push_back(std::move(method)); }
+void ClassDecl::accept(ASTVisitor& visitor) { visitor.visit(*this); }
+std::string ClassDecl::toString() const {
+    return "Class(" + name + ", fields=" + std::to_string(fields.size()) + 
+           ", methods=" + std::to_string(methods.size()) + ")";
+}
+
+// --- MethodCall ---
+MethodCall::MethodCall(const std::string& obj, const std::string& meth) : object(obj), method(meth) {}
+void MethodCall::addArgument(std::unique_ptr<Expression> arg) { arguments.push_back(std::move(arg)); }
+void MethodCall::accept(ASTVisitor& visitor) { visitor.visit(*this); }
+std::string MethodCall::toString() const {
+    std::string result = object + "." + method + "(";
+    for (size_t i = 0; i < arguments.size(); ++i) {
+        if (i > 0) result += ", ";
+        result += arguments[i]->toString();
+    }
+    return result + ")";
+}
+
+// --- FieldAccess ---
+FieldAccess::FieldAccess(const std::string& obj, const std::string& fld) : object(obj), field(fld) {}
+void FieldAccess::accept(ASTVisitor& visitor) { visitor.visit(*this); }
+std::string FieldAccess::toString() const { return object + "." + field; }
+
+// --- NewObject ---
+NewObject::NewObject(const std::string& name) : className(name) {}
+void NewObject::accept(ASTVisitor& visitor) { visitor.visit(*this); }
+std::string NewObject::toString() const { return "new " + className + "()"; }
+
+// --- ReturnStmt ---
+ReturnStmt::ReturnStmt(std::unique_ptr<Expression> val) : value(std::move(val)) {}
+void ReturnStmt::accept(ASTVisitor& visitor) { visitor.visit(*this); }
+std::string ReturnStmt::toString() const {
+    return value ? "return " + value->toString() : "return";
+}
+
+// ========== MethodCallStmt ==========
+MethodCallStmt::MethodCallStmt(std::unique_ptr<MethodCall> c) : call(std::move(c)) {}
+void MethodCallStmt::accept(ASTVisitor& visitor) { visitor.visit(*this); }
+std::string MethodCallStmt::toString() const { return call->toString(); }
+
+// ========== FieldAssignStmt ==========
+FieldAssignStmt::FieldAssignStmt(std::unique_ptr<FieldAccess> f, std::unique_ptr<Expression> v)
+    : field(std::move(f)), value(std::move(v)) {}
+void FieldAssignStmt::accept(ASTVisitor& visitor) { visitor.visit(*this); }
+std::string FieldAssignStmt::toString() const {
+    return field->toString() + " = " + value->toString();
+}
+
+// ========== NewStmt ==========
+NewStmt::NewStmt(std::unique_ptr<NewObject> n) : newObj(std::move(n)) {}
+void NewStmt::accept(ASTVisitor& visitor) { visitor.visit(*this); }
+std::string NewStmt::toString() const { return newObj->toString(); }

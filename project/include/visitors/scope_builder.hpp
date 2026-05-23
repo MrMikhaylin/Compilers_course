@@ -30,6 +30,18 @@ public:
     void visit(WhileStmt& node) override;
     void visit(BlockStatement& node) override;
     
+    void visit(FieldDecl& node) override;
+    void visit(MethodDecl& node) override;
+    void visit(ClassDecl& node) override;
+    void visit(MethodCall& node) override;
+    void visit(FieldAccess& node) override;
+    void visit(NewObject& node) override;
+    void visit(ReturnStmt& node) override;
+    
+    void visit(MethodCallStmt& node) override;
+    void visit(FieldAssignStmt& node) override;
+    void visit(NewStmt& node) override;
+    
     Scope* getGlobalScope() const { return globalScope.get(); }
     void reportErrors();
 };

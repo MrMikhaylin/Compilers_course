@@ -110,3 +110,53 @@ void PrintVisitor::visit(BlockStatement& node) {
     }
     indent--;
 }
+
+void PrintVisitor::visit(FieldDecl& node) {
+    out << "Field(" << node.name << ": " << node.type << ")\n";
+}
+void PrintVisitor::visit(MethodDecl& node) {
+    out << "Method(" << node.name << ")\n";
+}
+void PrintVisitor::visit(ClassDecl& node) {
+    out << "Class(" << node.name << ")\n";
+    indent++;
+    for (auto& field : node.fields) {
+        printIndent();
+        field->accept(*this);
+    }
+    for (auto& method : node.methods) {
+        printIndent();
+        method->accept(*this);
+    }
+    indent--;
+}
+
+void PrintVisitor::visit(MethodCall& node) {
+    out << "MethodCall(" << node.object << "." << node.method << ")\n";
+}
+void PrintVisitor::visit(FieldAccess& node) {
+    out << "FieldAccess(" << node.object << "." << node.field << ")\n";
+}
+void PrintVisitor::visit(NewObject& node) {
+    out << "NewObject(" << node.className << ")\n";
+}
+void PrintVisitor::visit(ReturnStmt& node) {
+    out << "Return\n";
+}
+
+void PrintVisitor::visit(MethodCallStmt& node) {
+    out << "MethodCallStmt: ";
+    node.call->accept(*this);
+}
+
+void PrintVisitor::visit(FieldAssignStmt& node) {
+    out << "FieldAssignStmt: ";
+    node.field->accept(*this);
+    out << " = ";
+    node.value->accept(*this);
+}
+
+void PrintVisitor::visit(NewStmt& node) {
+    out << "NewStmt: ";
+    node.newObj->accept(*this);
+}

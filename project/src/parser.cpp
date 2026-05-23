@@ -104,8 +104,52 @@ std::unique_ptr<Statement> Parser::parseStatement() {
     if (match(TokenType::LBRACE)) {
         return parseBlock();
     }
+    if (match(TokenType::CLASS)) {
+        return parseClassDecl();
+    }
+    if (match(TokenType::RETURN)) {
+        return parseReturnStmt();
+    }
     if (match(TokenType::IDENTIFIER)) {
-        return parseAssignment();
+        std::string identifier = previous().value;
+        
+        if (match(TokenType::ASSIGN)) {
+            auto value = parseExpression();
+            consume(TokenType::SEMICOLON, "Ожидается ';' после присваивания");
+            return std::make_unique<Assignment>(identifier, std::move(value));
+        } else if (match(TokenType::DOT)) {
+            if (check(TokenType::IDENTIFIER)) {
+                size_t savedPos = current;
+                Token temp = advance();
+                bool isMethod = check(TokenType::LPAREN);
+                current = savedPos;
+                
+                if (isMethod) {
+                    auto expr = parseMethodCall(identifier);
+                    consume(TokenType::SEMICOLON, "Ожидается ';' после вызова метода");
+                    return std::make_unique<MethodCallStmt>(std::move(expr));
+                } else {
+                    auto expr = parseFieldAccess(identifier);
+                    if (match(TokenType::ASSIGN)) {
+                        auto value = parseExpression();
+                        consume(TokenType::SEMICOLON, "Ожидается ';' после присваивания");
+                        return std::make_unique<FieldAssignStmt>(std::move(expr), std::move(value));
+                    } else {
+                        consume(TokenType::SEMICOLON, "Ожидается ';'");
+                        return nullptr;
+                    }
+                }
+            }
+        } else {
+            Token unexpected = peek();
+            std::string error = "Неожиданный токен после идентификатора: " + unexpected.toString();
+            throw ParseError(error);
+        }
+    }
+    if (match(TokenType::NEW)) {
+        auto expr = parseNewObject();
+        consume(TokenType::SEMICOLON, "Ожидается ';' после new");
+        return std::make_unique<NewStmt>(std::move(expr));
     }
     
     if (!check(TokenType::END)) {
@@ -310,4 +354,102 @@ std::unique_ptr<Expression> Parser::parsePrimary() {
     Token unexpected = peek();
     std::string error = "Ожидается выражение, получено: " + unexpected.toString();
     throw ParseError(error);
+}
+
+std::unique_ptr<Statement> Parser::parseClassDecl() {
+    Token nameToken = consume(TokenType::IDENTIFIER, "Ожидается имя класса");
+    consume(TokenType::LBRACE, "Ожидается '{' после имени класса");
+    
+    auto classDecl = std::make_unique<ClassDecl>(nameToken.value);
+    
+    while (!check(TokenType::RBRACE) && !check(TokenType::END)) {
+        if (match(TokenType::DECLARE)) {
+            Token fieldName = consume(TokenType::IDENTIFIER, "Ожидается имя поля");
+            consume(TokenType::COLON, "Ожидается ':' после имени поля");
+            Token fieldType = consume(TokenType::INT, "Ожидается тип поля (int)");
+            consume(TokenType::SEMICOLON, "Ожидается ';' после объявления поля");
+            classDecl->addField(std::make_unique<FieldDecl>(fieldName.value, fieldType.value));
+        } else if (match(TokenType::DEF)) {
+            Token methodName = consume(TokenType::IDENTIFIER, "Ожидается имя метода");
+            consume(TokenType::LPAREN, "Ожидается '(' после имени метода");
+            
+            auto methodDecl = std::make_unique<MethodDecl>(methodName.value);
+            
+            if (!check(TokenType::RPAREN)) {
+                do {
+                    Token paramName = consume(TokenType::IDENTIFIER, "Ожидается имя параметра");
+                    consume(TokenType::COLON, "Ожидается ':' после имени параметра");
+                    consume(TokenType::INT, "Ожидается тип параметра (int)");
+                    methodDecl->addParameter(paramName.value);
+                } while (match(TokenType::COMMA));
+            }
+            
+            consume(TokenType::RPAREN, "Ожидается ')' после параметров");
+            consume(TokenType::COLON, "Ожидается ':' после параметров");
+            Token returnType = consume(TokenType::INT, "Ожидается тип возвращаемого значения (int)");
+            methodDecl->returnType = returnType.value;
+            
+            consume(TokenType::LBRACE, "Ожидается '{' перед телом метода");
+            while (!check(TokenType::RBRACE) && !check(TokenType::END)) {
+                auto stmt = parseStatement();
+                if (stmt) {
+                    methodDecl->addStatement(std::move(stmt));
+                }
+            }
+            consume(TokenType::RBRACE, "Ожидается '}' после тела метода");
+            
+            classDecl->addMethod(std::move(methodDecl));
+        } else {
+            Token unexpected = peek();
+            std::string error = "Неожиданный токен в теле класса: " + unexpected.toString();
+            throw ParseError(error);
+        }
+    }
+    
+    consume(TokenType::RBRACE, "Ожидается '}' после тела класса");
+    return classDecl;
+}
+
+std::unique_ptr<Statement> Parser::parseMethodDecl() {
+    throw ParseError("Методы вне классов не поддерживаются");
+}
+
+std::unique_ptr<MethodCall> Parser::parseMethodCall(const std::string& object) {
+    Token methodToken = consume(TokenType::IDENTIFIER, "Ожидается имя метода");
+    consume(TokenType::LPAREN, "Ожидается '(' после имени метода");
+    
+    auto methodCall = std::make_unique<MethodCall>(object, methodToken.value);
+    
+    if (!check(TokenType::RPAREN)) {
+        do {
+            auto arg = parseExpression();
+            methodCall->addArgument(std::move(arg));
+        } while (match(TokenType::COMMA));
+    }
+    
+    consume(TokenType::RPAREN, "Ожидается ')' после аргументов");
+    return methodCall;
+}
+
+std::unique_ptr<FieldAccess> Parser::parseFieldAccess(const std::string& object) {
+    Token fieldToken = consume(TokenType::IDENTIFIER, "Ожидается имя поля");
+    return std::make_unique<FieldAccess>(object, fieldToken.value);
+}
+
+std::unique_ptr<Statement> Parser::parseReturnStmt() {
+    if (check(TokenType::SEMICOLON)) {
+        advance();
+        return std::make_unique<ReturnStmt>(nullptr);
+    }
+    
+    auto value = parseExpression();
+    consume(TokenType::SEMICOLON, "Ожидается ';' после return");
+    return std::make_unique<ReturnStmt>(std::move(value));
+}
+
+std::unique_ptr<NewObject> Parser::parseNewObject() {
+    Token className = consume(TokenType::IDENTIFIER, "Ожидается имя класса");
+    consume(TokenType::LPAREN, "Ожидается '(' после new");
+    consume(TokenType::RPAREN, "Ожидается ')' после new");
+    return std::make_unique<NewObject>(className.value);
 }

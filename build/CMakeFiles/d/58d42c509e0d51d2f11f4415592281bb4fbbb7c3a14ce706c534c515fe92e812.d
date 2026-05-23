@@ -1,0 +1,3 @@
+include/llvm/Frontend/OpenACC/ACC.h.inc: \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/Frontend/OpenACC/ACC.td \
+  /home/konstantin/Compilers_course.Task1/llvm-project/llvm/include/llvm/Frontend/Directive/DirectiveBase.td

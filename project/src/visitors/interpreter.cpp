@@ -25,7 +25,6 @@ void Interpreter::declareVariable(const std::string& name, int value) {
 }
 
 void Interpreter::setVariable(const std::string& name, int value) {
-    // Собираем все скоупы во временный вектор
     std::vector<std::unordered_map<std::string, int>> scopes;
     while (!scopeStack.empty()) {
         scopes.push_back(scopeStack.top());
@@ -33,7 +32,6 @@ void Interpreter::setVariable(const std::string& name, int value) {
     }
     
     bool found = false;
-    // Ищем от глобального к локальному (обратный порядок)
     for (int i = scopes.size() - 1; i >= 0; --i) {
         auto it = scopes[i].find(name);
         if (it != scopes[i].end()) {
@@ -43,7 +41,6 @@ void Interpreter::setVariable(const std::string& name, int value) {
         }
     }
     
-    // Восстанавливаем стек
     for (int i = scopes.size() - 1; i >= 0; --i) {
         scopeStack.push(scopes[i]);
     }
@@ -54,7 +51,6 @@ void Interpreter::setVariable(const std::string& name, int value) {
 }
 
 int Interpreter::getVariable(const std::string& name) {
-    // Собираем все скоупы во временный вектор
     std::vector<std::unordered_map<std::string, int>> scopes;
     while (!scopeStack.empty()) {
         scopes.push_back(scopeStack.top());
@@ -63,8 +59,6 @@ int Interpreter::getVariable(const std::string& name) {
     
     int value = 0;
     bool found = false;
-
-    // Ищем от глобального к локальному (обратный порядок)
     for (int i = scopes.size() - 1; i >= 0; --i) {
         auto it = scopes[i].find(name);
         if (it != scopes[i].end()) {
@@ -74,7 +68,6 @@ int Interpreter::getVariable(const std::string& name) {
         }
     }
     
-    // Восстанавливаем стек
     for (int i = scopes.size() - 1; i >= 0; --i) {
         scopeStack.push(scopes[i]);
     }
@@ -135,32 +128,25 @@ void Interpreter::visit(WhileStmt& node) {
 }
 
 void Interpreter::visit(BlockStatement& node) {
-    // Сохраняем значения переменных, которые могут быть затенены
     std::unordered_map<std::string, int> shadowedVars;
     
-    // Проверяем, какие переменные будут объявлены в этом блоке
     for (auto& stmt : node.statements) {
         if (auto* decl = dynamic_cast<VarDecl*>(stmt.get())) {
-            // Проверяем, существует ли такая переменная во внешних скоупах
             try {
                 int outerValue = getVariable(decl->name);
                 shadowedVars[decl->name] = outerValue;
-            } catch (...) {
-                // Переменная не существовала - ничего не сохраняем
-            }
+            } catch (...) {}
         }
     }
     
     enterScope();
     
-    // Выполняем операторы блока
     for (auto& stmt : node.statements) {
         stmt->accept(*this);
     }
     
     exitScope();
     
-    // Восстанавливаем затененные переменные
     for (const auto& [name, value] : shadowedVars) {
         setVariable(name, value);
     }
@@ -209,17 +195,117 @@ int Interpreter::evaluate(Expression* expr) {
             }
         }
         
-        void visit(Program&) override {}
-        void visit(VarDecl&) override {}
-        void visit(Assignment&) override {}
-        void visit(PrintStmt&) override {}
-        void visit(IfStmt&) override {}
-        void visit(WhileStmt&) override {}
-        void visit(BlockStatement&) override {}
+        void visit(Program& node) override {
+            throw std::runtime_error("Program not expected in evaluator");
+        }
+        
+        void visit(VarDecl& node) override {
+            throw std::runtime_error("VarDecl not expected in evaluator");
+        }
+        
+        void visit(Assignment& node) override {
+            throw std::runtime_error("Assignment not expected in evaluator");
+        }
+        
+        void visit(PrintStmt& node) override {
+            throw std::runtime_error("PrintStmt not expected in evaluator");
+        }
+        
+        void visit(IfStmt& node) override {
+            throw std::runtime_error("IfStmt not expected in evaluator");
+        }
+        
+        void visit(WhileStmt& node) override {
+            throw std::runtime_error("WhileStmt not expected in evaluator");
+        }
+        
+        void visit(BlockStatement& node) override {
+            throw std::runtime_error("BlockStatement not expected in evaluator");
+        }
+        
+        void visit(FieldDecl& node) override {
+            throw std::runtime_error("FieldDecl not expected in evaluator");
+        }
+        
+        void visit(MethodDecl& node) override {
+            throw std::runtime_error("MethodDecl not expected in evaluator");
+        }
+        
+        void visit(ClassDecl& node) override {
+            throw std::runtime_error("ClassDecl not expected in evaluator");
+        }
+        
+        void visit(MethodCall& node) override {
+            throw std::runtime_error("MethodCall not expected in evaluator");
+        }
+        
+        void visit(FieldAccess& node) override {
+            throw std::runtime_error("FieldAccess not expected in evaluator");
+        }
+        
+        void visit(NewObject& node) override {
+            throw std::runtime_error("NewObject not expected in evaluator");
+        }
+        
+        void visit(ReturnStmt& node) override {
+            throw std::runtime_error("ReturnStmt not expected in evaluator");
+        }
+        
+        void visit(MethodCallStmt& node) override {
+            throw std::runtime_error("MethodCallStmt not expected in evaluator");
+        }
+        
+        void visit(FieldAssignStmt& node) override {
+            throw std::runtime_error("FieldAssignStmt not expected in evaluator");
+        }
+        
+        void visit(NewStmt& node) override {
+            throw std::runtime_error("NewStmt not expected in evaluator");
+        }
     };
     
     Evaluator eval;
     eval.interpreter = this;
     expr->accept(eval);
     return eval.result;
+}
+
+void Interpreter::visit(FieldDecl& node) {
+    throw std::runtime_error("Классы пока не поддерживаются в интерпретаторе");
+}
+
+void Interpreter::visit(MethodDecl& node) {
+    throw std::runtime_error("Методы пока не поддерживаются в интерпретаторе");
+}
+
+void Interpreter::visit(ClassDecl& node) {
+    throw std::runtime_error("Классы пока не поддерживаются в интерпретаторе");
+}
+
+void Interpreter::visit(MethodCall& node) {
+    throw std::runtime_error("Вызов методов пока не поддерживается в интерпретаторе");
+}
+
+void Interpreter::visit(FieldAccess& node) {
+    throw std::runtime_error("Доступ к полям пока не поддерживается в интерпретаторе");
+}
+
+void Interpreter::visit(NewObject& node) {
+    throw std::runtime_error("Создание объектов пока не поддерживается в интерпретаторе");
+}
+
+void Interpreter::visit(ReturnStmt& node) {
+    throw std::runtime_error("Оператор return пока не поддерживается в интерпретаторе");
+}
+
+void Interpreter::visit(MethodCallStmt& node) {
+    throw std::runtime_error("MethodCallStmt не поддерживается в интерпретаторе");
+}
+
+void Interpreter::visit(FieldAssignStmt& node) {
+    throw std::runtime_error("FieldAssignStmt не поддерживается в интерпретаторе");
+}
+
+void Interpreter::visit(NewStmt& node) {
+    throw std::runtime_error("NewStmt не поддерживается в интерпретаторе");
 }
