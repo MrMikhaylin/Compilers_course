@@ -3,7 +3,7 @@
 #include <stdexcept>
 
 Interpreter::Interpreter() {
-    enterScope();  // Глобальный скоуп
+    enterScope();
 }
 
 void Interpreter::enterScope() {
@@ -19,13 +19,13 @@ void Interpreter::exitScope() {
 void Interpreter::declareVariable(const std::string& name, int value) {
     auto& currentScope = scopeStack.top();
     if (currentScope.find(name) != currentScope.end()) {
-        return;  // Уже объявлена в этом скоупе - игнорируем
+        return;
     }
     currentScope[name] = value;
 }
 
 void Interpreter::setVariable(const std::string& name, int value) {
-    // Временно вытаскиваем все скоупы
+    // Собираем все скоупы во временный вектор
     std::vector<std::unordered_map<std::string, int>> scopes;
     while (!scopeStack.empty()) {
         scopes.push_back(scopeStack.top());
@@ -33,7 +33,7 @@ void Interpreter::setVariable(const std::string& name, int value) {
     }
     
     bool found = false;
-    // Идём от глобального к локальному (обратный порядок)
+    // Ищем от глобального к локальному (обратный порядок)
     for (int i = scopes.size() - 1; i >= 0; --i) {
         auto it = scopes[i].find(name);
         if (it != scopes[i].end()) {
@@ -54,7 +54,7 @@ void Interpreter::setVariable(const std::string& name, int value) {
 }
 
 int Interpreter::getVariable(const std::string& name) {
-    // Временно вытаскиваем все скоупы
+    // Собираем все скоупы во временный вектор
     std::vector<std::unordered_map<std::string, int>> scopes;
     while (!scopeStack.empty()) {
         scopes.push_back(scopeStack.top());
@@ -63,7 +63,8 @@ int Interpreter::getVariable(const std::string& name) {
     
     int value = 0;
     bool found = false;
-    // Идём от глобального к локальному (обратный порядок)
+
+    // Ищем от глобального к локальному (обратный порядок)
     for (int i = scopes.size() - 1; i >= 0; --i) {
         auto it = scopes[i].find(name);
         if (it != scopes[i].end()) {
@@ -134,11 +135,35 @@ void Interpreter::visit(WhileStmt& node) {
 }
 
 void Interpreter::visit(BlockStatement& node) {
+    // Сохраняем значения переменных, которые могут быть затенены
+    std::unordered_map<std::string, int> shadowedVars;
+    
+    // Проверяем, какие переменные будут объявлены в этом блоке
+    for (auto& stmt : node.statements) {
+        if (auto* decl = dynamic_cast<VarDecl*>(stmt.get())) {
+            // Проверяем, существует ли такая переменная во внешних скоупах
+            try {
+                int outerValue = getVariable(decl->name);
+                shadowedVars[decl->name] = outerValue;
+            } catch (...) {
+                // Переменная не существовала - ничего не сохраняем
+            }
+        }
+    }
+    
     enterScope();
+    
+    // Выполняем операторы блока
     for (auto& stmt : node.statements) {
         stmt->accept(*this);
     }
+    
     exitScope();
+    
+    // Восстанавливаем затененные переменные
+    for (const auto& [name, value] : shadowedVars) {
+        setVariable(name, value);
+    }
 }
 
 int Interpreter::evaluate(Expression* expr) {
