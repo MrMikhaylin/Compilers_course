@@ -1,0 +1,414 @@
+Determining if the include file CrashReporterClient.h exists failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-PgfFDk
+
+Run Build Command(s):/usr/bin/ninja cmTC_a397f && [1/2] Building C object CMakeFiles/cmTC_a397f.dir/CheckIncludeFile.c.o
+FAILED: CMakeFiles/cmTC_a397f.dir/CheckIncludeFile.c.o 
+/usr/bin/cc -D_GNU_SOURCE  -O3 -DNDEBUG -o CMakeFiles/cmTC_a397f.dir/CheckIncludeFile.c.o -c /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-PgfFDk/CheckIncludeFile.c
+/home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-PgfFDk/CheckIncludeFile.c:1:10: fatal error: CrashReporterClient.h: Нет такого файла или каталога
+    1 | #include <CrashReporterClient.h>
+      |          ^~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+ninja: build stopped: subcommand failed.
+
+
+
+Determining if the function pfm_initialize exists in the pfm failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-VHBKxo
+
+Run Build Command(s):/usr/bin/ninja cmTC_fea3a && [1/2] Building C object CMakeFiles/cmTC_fea3a.dir/CheckFunctionExists.c.o
+[2/2] Linking C executable cmTC_fea3a
+FAILED: cmTC_fea3a 
+: && /usr/bin/cc -DCHECK_FUNCTION_EXISTS=pfm_initialize -O3 -DNDEBUG  CMakeFiles/cmTC_fea3a.dir/CheckFunctionExists.c.o -o cmTC_fea3a  -lpfm  -lm && :
+/usr/bin/ld: невозможно найти -lpfm: Нет такого файла или каталога
+collect2: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+
+
+
+Performing C SOURCE FILE Test C_SUPPORTS_WERROR_UNGUARDED_AVAILABILITY_NEW failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-khtvAJ
+
+Run Build Command(s):/usr/bin/ninja cmTC_92067 && [1/2] Building C object CMakeFiles/cmTC_92067.dir/src.c.o
+FAILED: CMakeFiles/cmTC_92067.dir/src.c.o 
+/usr/bin/cc -DC_SUPPORTS_WERROR_UNGUARDED_AVAILABILITY_NEW  -O3 -DNDEBUG   -Werror=unguarded-availability-new -o CMakeFiles/cmTC_92067.dir/src.c.o -c /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-khtvAJ/src.c
+cc1: error: '-Werror=unguarded-availability-new': no option '-Wunguarded-availability-new'
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main(void) { return 0; }
+
+Determining if the __unw_add_dynamic_fde exist failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-reksMY
+
+Run Build Command(s):/usr/bin/ninja cmTC_aa2f7 && [1/2] Building C object CMakeFiles/cmTC_aa2f7.dir/CheckSymbolExists.c.o
+[2/2] Linking C executable cmTC_aa2f7
+FAILED: cmTC_aa2f7 
+: && /usr/bin/cc -O3 -DNDEBUG  CMakeFiles/cmTC_aa2f7.dir/CheckSymbolExists.c.o -o cmTC_aa2f7  -lm && :
+/usr/bin/ld: CMakeFiles/cmTC_aa2f7.dir/CheckSymbolExists.c.o: в функции «main»:
+CheckSymbolExists.c:(.text.startup+0x3): неопределённая ссылка на «__unw_add_dynamic_fde»
+collect2: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+
+
+File CheckSymbolExists.c:
+/* */
+#include </home/konstantin/Compilers_course.Task1/llvm-project/llvm/cmake/unwind.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef __unw_add_dynamic_fde
+  return ((int*)(&__unw_add_dynamic_fde))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the mallctl exist failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-g5avsv
+
+Run Build Command(s):/usr/bin/ninja cmTC_f7ec5 && [1/2] Building C object CMakeFiles/cmTC_f7ec5.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_f7ec5.dir/CheckSymbolExists.c.o 
+/usr/bin/cc -D_GNU_SOURCE  -O3 -DNDEBUG -o CMakeFiles/cmTC_f7ec5.dir/CheckSymbolExists.c.o -c /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-g5avsv/CheckSymbolExists.c
+/home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-g5avsv/CheckSymbolExists.c:2:10: fatal error: malloc_np.h: Нет такого файла или каталога
+    2 | #include <malloc_np.h>
+      |          ^~~~~~~~~~~~~
+compilation terminated.
+ninja: build stopped: subcommand failed.
+
+
+File CheckSymbolExists.c:
+/* */
+#include <malloc_np.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef mallctl
+  return ((int*)(&mallctl))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the malloc_zone_statistics exist failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-jPYfmY
+
+Run Build Command(s):/usr/bin/ninja cmTC_89c6e && [1/2] Building C object CMakeFiles/cmTC_89c6e.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_89c6e.dir/CheckSymbolExists.c.o 
+/usr/bin/cc -D_GNU_SOURCE  -O3 -DNDEBUG -o CMakeFiles/cmTC_89c6e.dir/CheckSymbolExists.c.o -c /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-jPYfmY/CheckSymbolExists.c
+/home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-jPYfmY/CheckSymbolExists.c:2:10: fatal error: malloc/malloc.h: Нет такого файла или каталога
+    2 | #include <malloc/malloc.h>
+      |          ^~~~~~~~~~~~~~~~~
+compilation terminated.
+ninja: build stopped: subcommand failed.
+
+
+File CheckSymbolExists.c:
+/* */
+#include <malloc/malloc.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef malloc_zone_statistics
+  return ((int*)(&malloc_zone_statistics))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the strerror_s exist failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-J9jaBI
+
+Run Build Command(s):/usr/bin/ninja cmTC_3138f && [1/2] Building C object CMakeFiles/cmTC_3138f.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_3138f.dir/CheckSymbolExists.c.o 
+/usr/bin/cc -D_GNU_SOURCE  -O3 -DNDEBUG -o CMakeFiles/cmTC_3138f.dir/CheckSymbolExists.c.o -c /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-J9jaBI/CheckSymbolExists.c
+/home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-J9jaBI/CheckSymbolExists.c: In function ‘main’:
+/home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-J9jaBI/CheckSymbolExists.c:8:19: error: ‘strerror_s’ undeclared (first use in this function); did you mean ‘strerror_l’?
+    8 |   return ((int*)(&strerror_s))[argc];
+      |                   ^~~~~~~~~~
+      |                   strerror_l
+/home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-J9jaBI/CheckSymbolExists.c:8:19: note: each undeclared identifier is reported only once for each function it appears in
+ninja: build stopped: subcommand failed.
+
+
+File CheckSymbolExists.c:
+/* */
+#include <string.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strerror_s
+  return ((int*)(&strerror_s))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Performing C SOURCE FILE Test HAVE_STRUCT_STAT_ST_MTIMESPEC_TV_NSEC failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-QvGNxw
+
+Run Build Command(s):/usr/bin/ninja cmTC_7e7eb && [1/2] Building C object CMakeFiles/cmTC_7e7eb.dir/src.c.o
+FAILED: CMakeFiles/cmTC_7e7eb.dir/src.c.o 
+/usr/bin/cc -DHAVE_STRUCT_STAT_ST_MTIMESPEC_TV_NSEC -D_GNU_SOURCE  -O3 -DNDEBUG -o CMakeFiles/cmTC_7e7eb.dir/src.c.o -c /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-QvGNxw/src.c
+/home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-QvGNxw/src.c: In function ‘main’:
+/home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-QvGNxw/src.c:7:34: error: ‘struct stat’ has no member named ‘st_mtimespec’
+    7 |   (void)sizeof(((struct stat *)0)->st_mtimespec.tv_nsec);
+      |                                  ^~
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+
+#include <sys/types.h>
+#include <sys/stat.h>
+
+int main()
+{
+  (void)sizeof(((struct stat *)0)->st_mtimespec.tv_nsec);
+  return 0;
+}
+
+
+Determining if the pthread_get_name_np exist failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-Am77LF
+
+Run Build Command(s):/usr/bin/ninja cmTC_51356 && [1/2] Building C object CMakeFiles/cmTC_51356.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_51356.dir/CheckSymbolExists.c.o 
+/usr/bin/cc -D_GNU_SOURCE  -O3 -DNDEBUG -o CMakeFiles/cmTC_51356.dir/CheckSymbolExists.c.o -c /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-Am77LF/CheckSymbolExists.c
+/home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-Am77LF/CheckSymbolExists.c:3:10: fatal error: pthread_np.h: Нет такого файла или каталога
+    3 | #include <pthread_np.h>
+      |          ^~~~~~~~~~~~~~
+compilation terminated.
+ninja: build stopped: subcommand failed.
+
+
+File CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+#include <pthread_np.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_get_name_np
+  return ((int*)(&pthread_get_name_np))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the pthread_set_name_np exist failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-ZtoMlg
+
+Run Build Command(s):/usr/bin/ninja cmTC_74288 && [1/2] Building C object CMakeFiles/cmTC_74288.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_74288.dir/CheckSymbolExists.c.o 
+/usr/bin/cc -D_GNU_SOURCE  -O3 -DNDEBUG -o CMakeFiles/cmTC_74288.dir/CheckSymbolExists.c.o -c /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-ZtoMlg/CheckSymbolExists.c
+/home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-ZtoMlg/CheckSymbolExists.c:3:10: fatal error: pthread_np.h: Нет такого файла или каталога
+    3 | #include <pthread_np.h>
+      |          ^~~~~~~~~~~~~~
+compilation terminated.
+ninja: build stopped: subcommand failed.
+
+
+File CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+#include <pthread_np.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_set_name_np
+  return ((int*)(&pthread_set_name_np))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Determining if the proc_pid_rusage exist failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-kptEYu
+
+Run Build Command(s):/usr/bin/ninja cmTC_a1411 && [1/2] Building C object CMakeFiles/cmTC_a1411.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_a1411.dir/CheckSymbolExists.c.o 
+/usr/bin/cc -D_GNU_SOURCE  -O3 -DNDEBUG -o CMakeFiles/cmTC_a1411.dir/CheckSymbolExists.c.o -c /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-kptEYu/CheckSymbolExists.c
+/home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-kptEYu/CheckSymbolExists.c:2:10: fatal error: libproc.h: Нет такого файла или каталога
+    2 | #include <libproc.h>
+      |          ^~~~~~~~~~~
+compilation terminated.
+ninja: build stopped: subcommand failed.
+
+
+File CheckSymbolExists.c:
+/* */
+#include <libproc.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef proc_pid_rusage
+  return ((int*)(&proc_pid_rusage))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Performing C SOURCE FILE Test C_SUPPORTS_CXX98_COMPAT_EXTRA_SEMI_FLAG failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-VTI0pr
+
+Run Build Command(s):/usr/bin/ninja cmTC_c3047 && [1/2] Building C object CMakeFiles/cmTC_c3047.dir/src.c.o
+FAILED: CMakeFiles/cmTC_c3047.dir/src.c.o 
+/usr/bin/cc -DC_SUPPORTS_CXX98_COMPAT_EXTRA_SEMI_FLAG  -fPIC -fno-semantic-interposition -Werror=date-time -Wall -Wextra -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wno-missing-field-initializers -pedantic -Wno-long-long  -O3 -DNDEBUG   -Werror -Wc++98-compat-extra-semi -o CMakeFiles/cmTC_c3047.dir/src.c.o -c /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-VTI0pr/src.c
+cc: error: unrecognized command-line option '-Wc++98-compat-extra-semi'
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main(void) { return 0; }
+
+Performing C++ SOURCE FILE Test CXX_SUPPORTS_CXX98_COMPAT_EXTRA_SEMI_FLAG failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-Ck0BG2
+
+Run Build Command(s):/usr/bin/ninja cmTC_4df55 && [1/2] Building CXX object CMakeFiles/cmTC_4df55.dir/src.cxx.o
+FAILED: CMakeFiles/cmTC_4df55.dir/src.cxx.o 
+/usr/bin/c++ -DCXX_SUPPORTS_CXX98_COMPAT_EXTRA_SEMI_FLAG  -fPIC -fno-semantic-interposition -fvisibility-inlines-hidden -Werror=date-time -Wall -Wextra -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wno-missing-field-initializers -pedantic -Wno-long-long  -O3 -DNDEBUG   -Werror -Wc++98-compat-extra-semi -std=c++17 -o CMakeFiles/cmTC_4df55.dir/src.cxx.o -c /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-Ck0BG2/src.cxx
+c++: error: unrecognized command-line option '-Wc++98-compat-extra-semi'
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main() { return 0; }
+
+Performing C SOURCE FILE Test C_WCOMMENT_ALLOWS_LINE_WRAP failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-jvZPQX
+
+Run Build Command(s):/usr/bin/ninja cmTC_a9807 && [1/2] Building C object CMakeFiles/cmTC_a9807.dir/src.c.o
+FAILED: CMakeFiles/cmTC_a9807.dir/src.c.o 
+/usr/bin/cc -DC_WCOMMENT_ALLOWS_LINE_WRAP -D_GNU_SOURCE  -fPIC -fno-semantic-interposition -Werror=date-time -Wall -Wextra -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wno-missing-field-initializers -pedantic -Wno-long-long -Wimplicit-fallthrough  -Werror -Wcomment -O3 -DNDEBUG -o CMakeFiles/cmTC_a9807.dir/src.c.o -c /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-jvZPQX/src.c
+/home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-jvZPQX/src.c:1:1: error: multi-line comment [-Werror=comment]
+    1 | // \
+      | ^
+cc1: all warnings being treated as errors
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+// \
+//
+int main(void) {return 0;}
+
+Performing C SOURCE FILE Test C_SUPPORTS_CTAD_MAYBE_UNSPPORTED_FLAG failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-8ciXA5
+
+Run Build Command(s):/usr/bin/ninja cmTC_daac6 && [1/2] Building C object CMakeFiles/cmTC_daac6.dir/src.c.o
+FAILED: CMakeFiles/cmTC_daac6.dir/src.c.o 
+/usr/bin/cc -DC_SUPPORTS_CTAD_MAYBE_UNSPPORTED_FLAG  -fPIC -fno-semantic-interposition -Werror=date-time -Wall -Wextra -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wno-missing-field-initializers -pedantic -Wno-long-long -Wimplicit-fallthrough -Wno-comment  -O3 -DNDEBUG   -Werror -Wctad-maybe-unsupported -o CMakeFiles/cmTC_daac6.dir/src.c.o -c /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-8ciXA5/src.c
+cc1: error: command-line option '-Wctad-maybe-unsupported' is valid for C++/ObjC++ but not for C [-Werror]
+cc1: all warnings being treated as errors
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main(void) { return 0; }
+
+Performing C++ SOURCE FILE Test LINKER_SUPPORTS_COLOR_DIAGNOSTICS failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-HL5rmn
+
+Run Build Command(s):/usr/bin/ninja cmTC_66aed && [1/2] Building CXX object CMakeFiles/cmTC_66aed.dir/src.cxx.o
+[2/2] Linking CXX executable cmTC_66aed
+FAILED: cmTC_66aed 
+: && /usr/bin/c++ -fPIC -fno-semantic-interposition -fvisibility-inlines-hidden -Werror=date-time -Wall -Wextra -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wno-missing-field-initializers -pedantic -Wno-long-long -Wimplicit-fallthrough -Wno-uninitialized -Wno-nonnull -Wno-class-memaccess -Wno-redundant-move -Wno-pessimizing-move -Wno-array-bounds -Wno-stringop-overread -Wno-dangling-pointer -Wno-noexcept-type -Wdelete-non-virtual-dtor -Wsuggest-override -Wno-comment -Wno-misleading-indentation -Wctad-maybe-unsupported -fdiagnostics-color  -O3 -DNDEBUG -Wl,--color-diagnostics CMakeFiles/cmTC_66aed.dir/src.cxx.o -o cmTC_66aed  -lm && :
+/usr/bin/ld: unrecognized option '--color-diagnostics'
+/usr/bin/ld: use the --help option for usage information
+collect2: error: ld returned 1 exit status
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main() { return 0; }
+
+Determining if the os_signpost_interval_begin exist failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-mL0Pj9
+
+Run Build Command(s):/usr/bin/ninja cmTC_83813 && [1/2] Building C object CMakeFiles/cmTC_83813.dir/CheckSymbolExists.c.o
+FAILED: CMakeFiles/cmTC_83813.dir/CheckSymbolExists.c.o 
+/usr/bin/cc -D_GNU_SOURCE  -fPIC -fno-semantic-interposition -Wall -Wextra -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wno-missing-field-initializers -pedantic -Wno-long-long -Wimplicit-fallthrough -Wno-comment -fdiagnostics-color -ffunction-sections -fdata-sections  -O3 -DNDEBUG -o CMakeFiles/cmTC_83813.dir/CheckSymbolExists.c.o -c /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-mL0Pj9/CheckSymbolExists.c
+/home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-mL0Pj9/CheckSymbolExists.c:2:10: fatal error: os/signpost.h: Нет такого файла или каталога
+    2 | #include <os/signpost.h>
+      |          ^~~~~~~~~~~~~~~
+compilation terminated.
+ninja: build stopped: subcommand failed.
+
+
+File CheckSymbolExists.c:
+/* */
+#include <os/signpost.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef os_signpost_interval_begin
+  return ((int*)(&os_signpost_interval_begin))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+Performing C++ SOURCE FILE Test HAS_WERROR_GLOBAL_CTORS failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-uZRdlp
+
+Run Build Command(s):/usr/bin/ninja cmTC_a4110 && [1/2] Building CXX object CMakeFiles/cmTC_a4110.dir/src.cxx.o
+FAILED: CMakeFiles/cmTC_a4110.dir/src.cxx.o 
+/usr/bin/c++ -DHAS_WERROR_GLOBAL_CTORS  -fPIC -fno-semantic-interposition -fvisibility-inlines-hidden -Werror=date-time -Wall -Wextra -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wno-missing-field-initializers -pedantic -Wno-long-long -Wimplicit-fallthrough -Wno-uninitialized -Wno-nonnull -Wno-class-memaccess -Wno-redundant-move -Wno-pessimizing-move -Wno-array-bounds -Wno-stringop-overread -Wno-dangling-pointer -Wno-noexcept-type -Wdelete-non-virtual-dtor -Wsuggest-override -Wno-comment -Wno-misleading-indentation -Wctad-maybe-unsupported -fdiagnostics-color -ffunction-sections -fdata-sections  -O3 -DNDEBUG   -Werror=global-constructors -std=c++17 -o CMakeFiles/cmTC_a4110.dir/src.cxx.o -c /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-uZRdlp/src.cxx
+cc1plus: error: '-Werror=global-constructors': no option '-Wglobal-constructors'; did you mean '-felide-constructors'?
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main() { return 0; }
+
+Performing C++ SOURCE FILE Test HAVE_CXX_FLAG_WSHORTEN_64_TO_32 failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-ygJRLV
+
+Run Build Command(s):/usr/bin/ninja cmTC_848d2 && [1/2] Building CXX object CMakeFiles/cmTC_848d2.dir/src.cxx.o
+FAILED: CMakeFiles/cmTC_848d2.dir/src.cxx.o 
+/usr/bin/c++ -DHAVE_CXX_FLAG_WSHORTEN_64_TO_32  -fPIC -fno-semantic-interposition -fvisibility-inlines-hidden -Werror=date-time -Wall -Wextra -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wno-missing-field-initializers -pedantic -Wno-long-long -Wimplicit-fallthrough -Wno-uninitialized -Wno-nonnull -Wno-class-memaccess -Wno-redundant-move -Wno-pessimizing-move -Wno-array-bounds -Wno-stringop-overread -Wno-dangling-pointer -Wno-noexcept-type -Wdelete-non-virtual-dtor -Wsuggest-override -Wno-comment -Wno-misleading-indentation -Wctad-maybe-unsupported -fdiagnostics-color -ffunction-sections -fdata-sections  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wsuggest-override  -pedantic  -pedantic-errors  -Wshorten-64-to-32 -O3 -DNDEBUG   -Wshorten-64-to-32 -std=c++11 -o CMakeFiles/cmTC_848d2.dir/src.cxx.o -c /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-ygJRLV/src.cxx
+c++: error: unrecognized command-line option '-Wshorten-64-to-32'
+c++: error: unrecognized command-line option '-Wshorten-64-to-32'
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main() { return 0; }
+
+Performing C++ SOURCE FILE Test HAVE_CXX_FLAG_WD654 failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-nZkYH6
+
+Run Build Command(s):/usr/bin/ninja cmTC_b2822 && [1/2] Building CXX object CMakeFiles/cmTC_b2822.dir/src.cxx.o
+FAILED: CMakeFiles/cmTC_b2822.dir/src.cxx.o 
+/usr/bin/c++ -DHAVE_CXX_FLAG_WD654  -fPIC -fno-semantic-interposition -fvisibility-inlines-hidden -Werror=date-time -Wall -Wextra -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wno-missing-field-initializers -pedantic -Wno-long-long -Wimplicit-fallthrough -Wno-uninitialized -Wno-nonnull -Wno-class-memaccess -Wno-redundant-move -Wno-pessimizing-move -Wno-array-bounds -Wno-stringop-overread -Wno-dangling-pointer -Wno-noexcept-type -Wdelete-non-virtual-dtor -Wsuggest-override -Wno-comment -Wno-misleading-indentation -Wctad-maybe-unsupported -fdiagnostics-color -ffunction-sections -fdata-sections  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wsuggest-override  -pedantic  -pedantic-errors  -fstrict-aliasing  -Wno-deprecated-declarations  -fno-exceptions  -Wstrict-aliasing  -wd654 -O3 -DNDEBUG   -wd654 -std=c++11 -o CMakeFiles/cmTC_b2822.dir/src.cxx.o -c /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-nZkYH6/src.cxx
+c++: error: unrecognized command-line option '-wd654'
+c++: error: unrecognized command-line option '-wd654'
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main() { return 0; }
+
+Performing C++ SOURCE FILE Test HAVE_CXX_FLAG_WTHREAD_SAFETY failed with the following output:
+Change Dir: /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-Fx6Us6
+
+Run Build Command(s):/usr/bin/ninja cmTC_d97db && [1/2] Building CXX object CMakeFiles/cmTC_d97db.dir/src.cxx.o
+FAILED: CMakeFiles/cmTC_d97db.dir/src.cxx.o 
+/usr/bin/c++ -DHAVE_CXX_FLAG_WTHREAD_SAFETY  -fPIC -fno-semantic-interposition -fvisibility-inlines-hidden -Werror=date-time -Wall -Wextra -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wno-missing-field-initializers -pedantic -Wno-long-long -Wimplicit-fallthrough -Wno-uninitialized -Wno-nonnull -Wno-class-memaccess -Wno-redundant-move -Wno-pessimizing-move -Wno-array-bounds -Wno-stringop-overread -Wno-dangling-pointer -Wno-noexcept-type -Wdelete-non-virtual-dtor -Wsuggest-override -Wno-comment -Wno-misleading-indentation -Wctad-maybe-unsupported -fdiagnostics-color -ffunction-sections -fdata-sections  -Wall  -Wextra  -Wshadow  -Wfloat-equal  -Wold-style-cast  -Wsuggest-override  -pedantic  -pedantic-errors  -fstrict-aliasing  -Wno-deprecated-declarations  -fno-exceptions  -Wstrict-aliasing  -Wthread-safety -O3 -DNDEBUG   -Wthread-safety -std=c++11 -o CMakeFiles/cmTC_d97db.dir/src.cxx.o -c /home/konstantin/Compilers_course.Task1/build/CMakeFiles/CMakeScratch/TryCompile-Fx6Us6/src.cxx
+c++: error: unrecognized command-line option '-Wthread-safety'
+c++: error: unrecognized command-line option '-Wthread-safety'
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main() { return 0; }
+
